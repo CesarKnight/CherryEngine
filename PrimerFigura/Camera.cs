@@ -49,6 +49,7 @@ namespace PrimerFigura
 
         public void ProcessMouseMovement(float xOffset, float yOffset)
         {
+             
             xOffset *= Sensitivity;
             yOffset *= Sensitivity;
 
