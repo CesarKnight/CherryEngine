@@ -12,9 +12,7 @@ namespace PrimerFigura
     class Objeto
     {
         float centroX, centroY, centroZ;
-        // Vertices: Son puntos donde se unen las lineas para formar una figura
         float[] vertices = [];
-        // Indices: Es el orden en el que se unen los vertices para formar la figura
         uint[] indices = [];
 
         // en este objeto se guardan los vertices para que sean enviados a la gpu de un saque
@@ -88,130 +86,6 @@ namespace PrimerFigura
             GL.DeleteBuffer(BufferObjetoVertices);
             GL.DeleteBuffer(ElementBufferObject);
             GL.DeleteVertexArray(VertexArrayObject);
-        }
-
-        public void cargarCubo()
-        {
-            // vertices de un cubo
-            float[] vertices ={
-            // Cara frontal
-            -0.5f, -0.5f,  0.5f,
-             0.5f, -0.5f,  0.5f,
-             0.5f,  0.5f,  0.5f,
-            -0.5f,  0.5f,  0.5f, 
-
-            // Cara trasera
-            -0.5f, -0.5f, -0.5f,
-             0.5f, -0.5f, -0.5f,
-             0.5f,  0.5f, -0.5f,
-            -0.5f,  0.5f, -0.5f, 
-
-            // Cara izquierda
-            -0.5f, -0.5f, -0.5f,
-            -0.5f, -0.5f,  0.5f,
-            -0.5f,  0.5f,  0.5f,
-            -0.5f,  0.5f, -0.5f, 
-
-            // Cara derecha
-             0.5f, -0.5f, -0.5f,
-             0.5f, -0.5f,  0.5f,
-             0.5f,  0.5f,  0.5f,
-             0.5f,  0.5f, -0.5f, 
-
-            // Cara superior
-            -0.5f,  0.5f, -0.5f,
-             0.5f,  0.5f, -0.5f,
-             0.5f,  0.5f,  0.5f,
-            -0.5f,  0.5f,  0.5f, 
-
-            // Cara inferior
-            -0.5f, -0.5f, -0.5f,
-             0.5f, -0.5f, -0.5f,
-             0.5f, -0.5f,  0.5f,
-            -0.5f, -0.5f,  0.5f
-            };
-
-            // indices para dibujar el cubo usando elementos
-            uint[] indices = {
-            // Cara frontal
-            0, 1, 2, 2, 3, 0,
-            // Cara trasera
-            4, 5, 6, 6, 7, 4,
-            // Cara izquierda
-            8, 9, 10, 10, 11, 8,
-            // Cara derecha
-            12, 13, 14, 14, 15, 12,
-            // Cara superior
-            16, 17, 18, 18, 19, 16,
-            // Cara inferior
-            20, 21, 22, 22, 23, 20
-            };
-
-            this.cargar(vertices, indices);
-        }
-        public void cargarU()
-        {
-            // vertices de una U hecha con bloques, rotada 90 grados alrededor del eje Y
-            float[] vertices = {
-                // Bloque inferior izquierdo
-                -0.5f, -0.5f, -0.5f,
-                -0.5f, -0.5f, -0.3f,
-                -0.5f,  1.0f, -0.3f,
-                -0.5f,  1.0f, -0.5f,
-                 0.5f, -0.5f, -0.5f,
-                 0.5f, -0.5f, -0.3f,
-                 0.5f,  1.0f, -0.3f,
-                 0.5f,  1.0f, -0.5f,
-
-                // Bloque inferior derecho
-                -0.5f, -0.5f,  0.3f,
-                -0.5f, -0.5f,  0.5f,
-                -0.5f,  1.0f,  0.5f,
-                -0.5f,  1.0f,  0.3f,
-                 0.5f, -0.5f,  0.3f,
-                 0.5f, -0.5f,  0.5f,
-                 0.5f,  1.0f,  0.5f,
-                 0.5f,  1.0f,  0.3f,
-
-                // Bloque central inferior
-                -0.5f, -0.5f, -0.3f,
-                -0.5f, -0.5f,  0.3f,
-                -0.5f, -0.3f,  0.3f,
-                -0.5f, -0.3f, -0.3f,
-                 0.5f, -0.5f, -0.3f,
-                 0.5f, -0.5f,  0.3f,
-                 0.5f, -0.3f,  0.3f,
-                 0.5f, -0.3f, -0.3f
-            };
-
-            // indices para dibujar la U usando elementos
-            uint[] indices = {
-                // Bloque inferior izquierdo
-                0, 1, 2, 2, 3, 0,
-                0, 1, 5, 5, 4, 0,
-                1, 2, 6, 6, 5, 1,
-                2, 3, 7, 7, 6, 2,
-                3, 0, 4, 4, 7, 3,
-                4, 5, 6, 6, 7, 4,
-
-                // Bloque inferior derecho
-                8, 9, 10, 10, 11, 8,
-                8, 9, 13, 13, 12, 8,
-                9, 10, 14, 14, 13, 9,
-                10, 11, 15, 15, 14, 10,
-                11, 8, 12, 12, 15, 11,
-                12, 13, 14, 14, 15, 12,
-
-                // Bloque central inferior
-                16, 17, 18, 18, 19, 16,
-                16, 17, 21, 21, 20, 16,
-                17, 18, 22, 22, 21, 17,
-                18, 19, 23, 23, 22, 18,
-                19, 16, 20, 20, 23, 19,
-                20, 21, 22, 22, 23, 20
-            };
-
-            this.cargar(vertices, indices);
         }
     }
 }
