@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using OpenTK.Mathematics;
+using OpenTK.Windowing.Common;
 using OpenTK.Windowing.GraphicsLibraryFramework;
 
 namespace PrimerFigura
@@ -45,6 +46,12 @@ namespace PrimerFigura
                 Position -= Vector3.Normalize(Vector3.Cross(Front, Up)) * velocity;
             if (keyboardState.IsKeyDown(Keys.D))
                 Position += Vector3.Normalize(Vector3.Cross(Front, Up)) * velocity;
+            if (keyboardState.IsKeyDown(Keys.LeftControl))
+                Position -= Up * velocity;
+            if (keyboardState.IsKeyDown(Keys.Space))
+                Position += Up * velocity;
+            
+            
         }
 
         public void ProcessMouseMovement(float xOffset, float yOffset)

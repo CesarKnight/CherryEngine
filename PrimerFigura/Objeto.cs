@@ -60,9 +60,14 @@ namespace PrimerFigura
             GL.BindBuffer(BufferTarget.ElementArrayBuffer, ElementBufferObject);
             GL.BufferData(BufferTarget.ElementArrayBuffer, indices.Length * sizeof(uint), indices, BufferUsageHint.StaticDraw);
 
-            // configuramos el puntero para los vertices dando a entender que tiene 3 valores floats
-            GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, 3 * sizeof(float), 0);
+            // configuramos el puntero para los vertices dando a entender
+            // que tiene 3 valores floats para los vertices
+            GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, 6 * sizeof(float), 0);
             GL.EnableVertexAttribArray(0);
+
+            // y tambien 3 valores floats para el color de los vertices
+            GL.VertexAttribPointer(1, 3, VertexAttribPointerType.Float, false, 6 * sizeof(float), 3 * sizeof(float));
+            GL.EnableVertexAttribArray(1);
         }
 
         public void cargar(float[] vertices, uint[] indices)
@@ -94,41 +99,41 @@ namespace PrimerFigura
         {
             // vertices de un cubo
             float[] vertices ={
-            // Cara frontal
-            -0.5f, -0.5f,  0.5f,
-             0.5f, -0.5f,  0.5f,
-             0.5f,  0.5f,  0.5f,
-            -0.5f,  0.5f,  0.5f, 
+            // Cara frontal         // Colores
+            -0.5f, -0.5f,  0.5f,    0.0f , 1.0f, 0.0f,
+             0.5f, -0.5f,  0.5f,    0.0f , 1.0f, 0.0f,
+             0.5f,  0.5f,  0.5f,    0.0f , 1.0f, 0.0f,
+            -0.5f,  0.5f,  0.5f,    0.0f , 1.0f, 0.0f,
 
             // Cara trasera
-            -0.5f, -0.5f, -0.5f,
-             0.5f, -0.5f, -0.5f,
-             0.5f,  0.5f, -0.5f,
-            -0.5f,  0.5f, -0.5f, 
+            -0.5f, -0.5f, -0.5f,    1.0f , 0.0f, 0.0f,
+             0.5f, -0.5f, -0.5f,    1.0f , 0.0f, 0.0f,
+             0.5f,  0.5f, -0.5f,    1.0f , 0.0f, 0.0f,
+            -0.5f,  0.5f, -0.5f,    1.0f , 0.0f, 0.0f,
 
             // Cara izquierda
-            -0.5f, -0.5f, -0.5f,
-            -0.5f, -0.5f,  0.5f,
-            -0.5f,  0.5f,  0.5f,
-            -0.5f,  0.5f, -0.5f, 
+            -0.5f, -0.5f, -0.5f,     0.05f , 0.0f, 0.5f,
+            -0.5f, -0.5f,  0.5f,     0.05f , 0.0f, 0.5f,
+            -0.5f,  0.5f,  0.5f,     0.05f , 0.0f, 0.5f,
+            -0.5f,  0.5f, -0.5f,     0.05f , 0.0f, 0.5f,
 
             // Cara derecha
-             0.5f, -0.5f, -0.5f,
-             0.5f, -0.5f,  0.5f,
-             0.5f,  0.5f,  0.5f,
-             0.5f,  0.5f, -0.5f, 
+             0.5f, -0.5f, -0.5f,     1.0f , 0.0f, 0.0f,
+             0.5f, -0.5f,  0.5f,     1.0f , 0.0f, 0.0f,
+             0.5f,  0.5f,  0.5f,     1.0f , 0.0f, 0.0f,
+             0.5f,  0.5f, -0.5f,     1.0f , 0.0f, 0.0f,
 
             // Cara superior
-            -0.5f,  0.5f, -0.5f,
-             0.5f,  0.5f, -0.5f,
-             0.5f,  0.5f,  0.5f,
-            -0.5f,  0.5f,  0.5f, 
+            -0.5f,  0.5f, -0.5f,     1.0f , 0.0f, 0.0f,
+             0.5f,  0.5f, -0.5f,     1.0f , 0.0f, 0.0f,
+             0.5f,  0.5f,  0.5f,     1.0f , 0.0f, 0.0f,
+            -0.5f,  0.5f,  0.5f,     1.0f , 0.0f, 0.0f,
 
             // Cara inferior
-            -0.5f, -0.5f, -0.5f,
-             0.5f, -0.5f, -0.5f,
-             0.5f, -0.5f,  0.5f,
-            -0.5f, -0.5f,  0.5f
+            -0.5f, -0.5f, -0.5f,     1.0f , 0.0f, 0.0f,
+             0.5f, -0.5f, -0.5f,     1.0f , 0.0f, 0.0f,
+             0.5f, -0.5f,  0.5f,     1.0f , 0.0f, 0.0f,
+            -0.5f, -0.5f,  0.5f,     1.0f , 0.0f, 0.0f,
             };
 
             // indices para dibujar el cubo usando elementos
@@ -153,35 +158,35 @@ namespace PrimerFigura
         {
             // vertices de una U hecha con bloques, rotada 90 grados alrededor del eje Y
             float[] vertices = {
-                // Bloque inferior izquierdo
-                -0.5f, -0.5f, -0.5f,
-                -0.5f, -0.5f, -0.3f,
-                -0.5f,  1.0f, -0.3f,
-                -0.5f,  1.0f, -0.5f,
-                 0.5f, -0.5f, -0.5f,
-                 0.5f, -0.5f, -0.3f,
-                 0.5f,  1.0f, -0.3f,
-                 0.5f,  1.0f, -0.5f,
+                // Bloque inferior izquierdo    // COlores
+                -0.5f, -0.5f, -0.5f,            1.0f , 0.0f, 0.0f,
+                -0.5f, -0.5f, -0.3f,            1.0f , 0.0f, 0.0f,
+                -0.5f,  1.0f, -0.3f,            1.0f , 0.0f, 0.0f,
+                -0.5f,  1.0f, -0.5f,            1.0f , 0.0f, 0.0f,
+                 0.5f, -0.5f, -0.5f,            1.0f , 0.0f, 0.0f,
+                 0.5f, -0.5f, -0.3f,            1.0f , 0.0f, 0.0f,
+                 0.5f,  1.0f, -0.3f,            1.0f , 0.0f, 0.0f,
+                 0.5f,  1.0f, -0.5f,            1.0f , 0.0f, 0.0f,
 
                 // Bloque inferior derecho
-                -0.5f, -0.5f,  0.3f,
-                -0.5f, -0.5f,  0.5f,
-                -0.5f,  1.0f,  0.5f,
-                -0.5f,  1.0f,  0.3f,
-                 0.5f, -0.5f,  0.3f,
-                 0.5f, -0.5f,  0.5f,
-                 0.5f,  1.0f,  0.5f,
-                 0.5f,  1.0f,  0.3f,
+                -0.5f, -0.5f,  0.3f,            1.0f , 0.0f, 0.0f,
+                -0.5f, -0.5f,  0.5f,            1.0f , 0.0f, 0.0f,
+                -0.5f,  1.0f,  0.5f,            1.0f , 0.0f, 0.0f,
+                -0.5f,  1.0f,  0.3f,            1.0f , 0.0f, 0.0f,
+                 0.5f, -0.5f,  0.3f,            1.0f , 0.0f, 0.0f,
+                 0.5f, -0.5f,  0.5f,            1.0f , 0.0f, 0.0f,
+                 0.5f,  1.0f,  0.5f,            1.0f , 0.0f, 0.0f,
+                 0.5f,  1.0f,  0.3f,            1.0f , 0.0f, 0.0f,
 
                 // Bloque central inferior
-                -0.5f, -0.5f, -0.3f,
-                -0.5f, -0.5f,  0.3f,
-                -0.5f, -0.3f,  0.3f,
-                -0.5f, -0.3f, -0.3f,
-                 0.5f, -0.5f, -0.3f,
-                 0.5f, -0.5f,  0.3f,
-                 0.5f, -0.3f,  0.3f,
-                 0.5f, -0.3f, -0.3f
+                -0.5f, -0.5f, -0.3f,            1.0f , 0.0f, 0.0f,
+                -0.5f, -0.5f,  0.3f,            1.0f , 0.0f, 0.0f,
+                -0.5f, -0.3f,  0.3f,            1.0f , 0.0f, 0.0f,
+                -0.5f, -0.3f, -0.3f,            1.0f , 0.0f, 0.0f,
+                 0.5f, -0.5f, -0.3f,            1.0f , 0.0f, 0.0f,
+                 0.5f, -0.5f,  0.3f,            1.0f , 0.0f, 0.0f,
+                 0.5f, -0.3f,  0.3f,            1.0f , 0.0f, 0.0f,
+                 0.5f, -0.3f, -0.3f,            1.0f , 0.0f, 0.0f,
             };
 
             // indices para dibujar la U usando elementos

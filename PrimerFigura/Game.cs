@@ -29,7 +29,11 @@ namespace PrimerFigura
                 }
             )
         {
-            camera = new Camera(new Vector3(0.0f, 0.0f, 0.0f), new Vector3(0.0f, 0.0f, 0.0f), Vector3.UnitY);
+            camera = new Camera(
+                new Vector3(0.0f, 0.0f, 3.0f),  // Position slightly back
+                new Vector3(1.0f, 0.0f, 0.0f),  // Looking forward
+                Vector3.UnitY                     // Up vector
+            );
         }
 
        
@@ -60,6 +64,7 @@ namespace PrimerFigura
             // Color de fondo
             GL.ClearColor(0.5f, 0.1f, 0.3f, 1.0f);
             GL.Enable(EnableCap.DepthTest);
+            CursorState = CursorState.Grabbed;
 
             Objeto cubo = new Objeto(5, 0, 0);
             cubo.cargarCubo();
@@ -87,15 +92,16 @@ namespace PrimerFigura
             base.OnUpdateFrame(args);
 
             if (KeyboardState.IsKeyDown(Keys.Escape))
-            {
                 Close();
-            }
+            if (KeyboardState.IsKeyDown(Keys.Tab))
+                CursorState = CursorState == CursorState.Normal ? CursorState.Grabbed : CursorState.Normal;
 
             camera.ProcessKeyboardInput(KeyboardState, (float)args.Time);
 
             var mouseState = MouseState;
             var deltaX = mouseState.X - lastMousePosition.X;
             var deltaY = mouseState.Y - lastMousePosition.Y;
+            
             lastMousePosition = new Vector2(mouseState.X, mouseState.Y);
 
             camera.ProcessMouseMovement(deltaX, deltaY);
