@@ -11,6 +11,7 @@ using OpenTK.Mathematics;
 using OpenTK.Windowing.Common;
 using OpenTK.Windowing.Desktop;
 using OpenTK.Windowing.GraphicsLibraryFramework;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace PrimerFigura
 {
@@ -30,8 +31,8 @@ namespace PrimerFigura
             )
         {
             camera = new Camera(
-                new Vector3(0.0f, 0.0f, 3.0f),  // Position slightly back
-                new Vector3(1.0f, 0.0f, 0.0f),  // Looking forward
+                new Vector3(-2.0f, 0.0f, 0.0f),  // Position slightly back
+                new Vector3(0.0f, 0.0f, 0.0f),  // Looking forward
                 Vector3.UnitY                     // Up vector
             );
         }
@@ -43,6 +44,121 @@ namespace PrimerFigura
         // Lista de objetos
 
         List<Objeto> objetos = new List<Objeto>();
+
+
+        // vertices de un cubo
+        float[] verticesCubo ={
+            // Cara frontal         // Colores
+            -0.5f, -0.5f,  0.5f,    0.0f , 1.0f, 0.0f,
+             0.5f, -0.5f,  0.5f,    0.0f , 1.0f, 0.0f,
+             0.5f,  0.5f,  0.5f,    0.0f , 1.0f, 0.0f,
+            -0.5f,  0.5f,  0.5f,    0.0f , 1.0f, 0.0f,
+
+            // Cara trasera
+            -0.5f, -0.5f, -0.5f,    1.0f , 0.0f, 0.0f,
+             0.5f, -0.5f, -0.5f,    1.0f , 0.0f, 0.0f,
+             0.5f,  0.5f, -0.5f,    1.0f , 0.0f, 0.0f,
+            -0.5f,  0.5f, -0.5f,    1.0f , 0.0f, 0.0f,
+
+            // Cara izquierda
+            -0.5f, -0.5f, -0.5f,     0.05f , 0.0f, 0.5f,
+            -0.5f, -0.5f,  0.5f,     0.05f , 0.0f, 0.5f,
+            -0.5f,  0.5f,  0.5f,     0.05f , 0.0f, 0.5f,
+            -0.5f,  0.5f, -0.5f,     0.05f , 0.0f, 0.5f,
+
+            // Cara derecha
+             0.5f, -0.5f, -0.5f,     1.0f , 0.0f, 0.0f,
+             0.5f, -0.5f,  0.5f,     1.0f , 0.0f, 0.0f,
+             0.5f,  0.5f,  0.5f,     1.0f , 0.0f, 0.0f,
+             0.5f,  0.5f, -0.5f,     1.0f , 0.0f, 0.0f,
+
+            // Cara superior
+            -0.5f,  0.5f, -0.5f,     1.0f , 0.0f, 0.0f,
+             0.5f,  0.5f, -0.5f,     1.0f , 0.0f, 0.0f,
+             0.5f,  0.5f,  0.5f,     1.0f , 0.0f, 0.0f,
+            -0.5f,  0.5f,  0.5f,     1.0f , 0.0f, 0.0f,
+
+            // Cara inferior
+            -0.5f, -0.5f, -0.5f,     1.0f , 0.0f, 0.0f,
+             0.5f, -0.5f, -0.5f,     1.0f , 0.0f, 0.0f,
+             0.5f, -0.5f,  0.5f,     1.0f , 0.0f, 0.0f,
+            -0.5f, -0.5f,  0.5f,     1.0f , 0.0f, 0.0f,
+            };
+        // indices para dibujar el cubo usando elementos
+        uint[] indicesCubo = {
+            // Cara frontal
+            0, 1, 2, 2, 3, 0,
+            // Cara trasera
+            4, 5, 6, 6, 7, 4,
+            // Cara izquierda
+            8, 9, 10, 10, 11, 8,
+            // Cara derecha
+            12, 13, 14, 14, 15, 12,
+            // Cara superior
+            16, 17, 18, 18, 19, 16,
+            // Cara inferior
+            20, 21, 22, 22, 23, 20
+            };
+        // vertices de una U hecha con bloques, rotada 90 grados alrededor del eje Y
+        float[] verticesU = {
+                // Bloque inferior izquierdo    // COlores
+                -0.5f, -0.5f, -0.5f,            1.0f , 0.0f, 0.0f,
+                -0.5f, -0.5f, -0.3f,            1.0f , 0.0f, 0.0f,
+                -0.5f,  1.0f, -0.3f,            1.0f , 0.0f, 0.0f,
+                -0.5f,  1.0f, -0.5f,            1.0f , 0.0f, 0.0f,
+                 0.5f, -0.5f, -0.5f,            1.0f , 0.0f, 0.0f,
+                 0.5f, -0.5f, -0.3f,            1.0f , 0.0f, 0.0f,
+                 0.5f,  1.0f, -0.3f,            1.0f , 0.0f, 0.0f,
+                 0.5f,  1.0f, -0.5f,            1.0f , 0.0f, 0.0f,
+
+                // Bloque inferior derecho
+                -0.5f, -0.5f,  0.3f,            1.0f , 0.0f, 0.0f,
+                -0.5f, -0.5f,  0.5f,            1.0f , 0.0f, 0.0f,
+                -0.5f,  1.0f,  0.5f,            1.0f , 0.0f, 0.0f,
+                -0.5f,  1.0f,  0.3f,            1.0f , 0.0f, 0.0f,
+                 0.5f, -0.5f,  0.3f,            1.0f , 0.0f, 0.0f,
+                 0.5f, -0.5f,  0.5f,            1.0f , 0.0f, 0.0f,
+                 0.5f,  1.0f,  0.5f,            1.0f , 0.0f, 0.0f,
+                 0.5f,  1.0f,  0.3f,            1.0f , 0.0f, 0.0f,
+
+                // Bloque central inferior
+                -0.5f, -0.5f, -0.3f,            1.0f , 0.0f, 0.0f,
+                -0.5f, -0.5f,  0.3f,            1.0f , 0.0f, 0.0f,
+                -0.5f, -0.3f,  0.3f,            1.0f , 0.0f, 0.0f,
+                -0.5f, -0.3f, -0.3f,            1.0f , 0.0f, 0.0f,
+                 0.5f, -0.5f, -0.3f,            1.0f , 0.0f, 0.0f,
+                 0.5f, -0.5f,  0.3f,            1.0f , 0.0f, 0.0f,
+                 0.5f, -0.3f,  0.3f,            1.0f , 0.0f, 0.0f,
+                 0.5f, -0.3f, -0.3f,            1.0f , 0.0f, 0.0f,
+            };
+        // indices para dibujar la U usando elementos
+        uint[] indicesU = {
+                // Bloque inferior izquierdo
+                0, 1, 2, 2, 3, 0,
+                0, 1, 5, 5, 4, 0,
+                1, 2, 6, 6, 5, 1,
+                2, 3, 7, 7, 6, 2,
+                3, 0, 4, 4, 7, 3,
+                4, 5, 6, 6, 7, 4,
+
+                // Bloque inferior derecho
+                8, 9, 10, 10, 11, 8,
+                8, 9, 13, 13, 12, 8,
+                9, 10, 14, 14, 13, 9,
+                10, 11, 15, 15, 14, 10,
+                11, 8, 12, 12, 15, 11,
+                12, 13, 14, 14, 15, 12,
+
+                // Bloque central inferior
+                16, 17, 18, 18, 19, 16,
+                16, 17, 21, 21, 20, 16,
+                17, 18, 22, 22, 21, 17,
+                18, 19, 23, 23, 22, 18,
+                19, 16, 20, 20, 23, 19,
+                20, 21, 22, 22, 23, 20
+            };
+
+        
 
         protected override void OnFramebufferResize(FramebufferResizeEventArgs e)
         {
@@ -64,19 +180,27 @@ namespace PrimerFigura
             // Color de fondo
             GL.ClearColor(0.5f, 0.1f, 0.3f, 1.0f);
             GL.Enable(EnableCap.DepthTest);
+
             CursorState = CursorState.Grabbed;
 
-            Objeto cubo = new Objeto(5, 0, 0);
-            cubo.cargarCubo();
-            objetos.Add(cubo);
+            // el objeto sera 2 cubos con nuna U en el centro
+            Parte Cubo = new Parte(0, 0, -1);
+            Parte U = new Parte(0, 0, 0);
+            Parte Cubo1 = new Parte(0, 0, 1);
 
-            Objeto cubo1 = new Objeto(5, 0, 2);
-            cubo1.cargarCubo();
-            objetos.Add(cubo1);
+            Cubo.cargar(verticesCubo, indicesCubo);
+            Cubo1.cargar(verticesCubo, indicesCubo);
+            U.cargar(verticesU, indicesU);
 
-            Objeto U = new Objeto(5, 0, 4);
-            U.cargarU();
-            objetos.Add(U);
+            Objeto coleccion = new Objeto(0, 0, 0);
+
+            coleccion.añadirParte("Cubo1", Cubo);
+            coleccion.añadirParte("Cubo2", Cubo1);
+            coleccion.añadirParte("U1", U);
+
+            coleccion.setPosicion(0, 0, 0);
+
+            objetos.Add(coleccion);
 
             // compilamos el shader
             string baseDir = AppDomain.CurrentDomain.BaseDirectory;
@@ -128,6 +252,7 @@ namespace PrimerFigura
             {
                 objeto.dibujar(shader);
             }
+
 
             SwapBuffers();
         }
