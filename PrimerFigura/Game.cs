@@ -31,9 +31,9 @@ namespace PrimerFigura
             )
         {
             camera = new Camera(
-                new Vector3(-2.0f, 0.0f, 0.0f),  // Position slightly back
-                new Vector3(0.0f, 0.0f, 0.0f),  // Looking forward
-                Vector3.UnitY                     // Up vector
+                new Vector3(-2.0f, 0.0f, 0.0f), 
+                new Vector3(0.0f, 0.0f, 0.0f),  
+                Vector3.UnitY                   
             );
         }
 
@@ -183,23 +183,12 @@ namespace PrimerFigura
 
             CursorState = CursorState.Grabbed;
 
-            // el objeto sera 2 cubos con nuna U en el centro
-            Parte Cubo = new Parte(0, 0, -1);
-            Parte U = new Parte(0, 0, 0);
-            Parte Cubo1 = new Parte(0, 0, 1);
+            Objeto axis = new Objeto(0, 0, 0);
+            axis.cargarAxis();
+            objetos.Add(axis);
 
-            Cubo.cargar(verticesCubo, indicesCubo);
-            Cubo1.cargar(verticesCubo, indicesCubo);
-            U.cargar(verticesU, indicesU);
-
-            Objeto coleccion = new Objeto(0, 0, 0);
-
-            coleccion.añadirParte("Cubo1", Cubo);
-            coleccion.añadirParte("Cubo2", Cubo1);
-            coleccion.añadirParte("U1", U);
-
-            coleccion.setPosicion(0, 0, 0);
-
+            Objeto coleccion = new Objeto(-4, 0, 0);
+            coleccion.cargarCubo();
             objetos.Add(coleccion);
 
             // compilamos el shader

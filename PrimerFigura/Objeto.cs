@@ -30,36 +30,40 @@ namespace PrimerFigura
             return this.posicion;
         }
 
-        public void setPosicion(float x, float y, float z)
+        // cambia la posicion del centro del objeto y de todas sus partes
+        public void setPosicion(Vector3 nuevaPos)
         {
-            Vector3 antiguaPosicion = this.posicion;
-            this.posicion = new Vector3(x, y, z);
-
+            Vector3 dif = this.posicion - nuevaPos;
             foreach (var parte in partesLista)
             {
-                parte.Value.posicion += this.posicion - antiguaPosicion;
+                parte.Value.SetPosicion(parte.Value.GetPosicion() - dif);
             }
         }
-        public void dibujar(Shader shader)
-        {
-            foreach (var parte in partesLista)
-            {
-                parte.Value.dibujar(shader);
 
-            }
-        }
 
         // Cambia la posicion de una parte en relacion a la posicion del objeto
         public void setPartePosicionRelativo(string nombre, float xDif, float yDif, float zDif)
         {
             if (this.partesLista.ContainsKey(nombre))
             {
-                this.partesLista[nombre].posicion = new Vector3(
-                    this.posicion.X + xDif,
-                    this.posicion.Y + yDif,
-                    this.posicion.Z + zDif
+                Vector3 antiguaPos = this.partesLista[nombre].GetPosicion();
+                Vector3 nuevaPos =
+                (
+                    antiguaPos.X + xDif,
+                    antiguaPos.Y + yDif,
+                    antiguaPos.Z + zDif
                 );
+                this.partesLista[nombre].SetPosicion(nuevaPos);
             }
+        }
+
+        public void dibujar(Shader shader)
+        {
+            foreach (var parte in partesLista)
+            {
+                parte.Value.dibujar(shader);
+            }
+            
         }
 
         public void añadirParte(string nombre, Parte nuevaParte)
@@ -72,6 +76,19 @@ namespace PrimerFigura
             this.partesLista.Remove(nombre);
         }
 
+        public void cargarCubo()
+        {
+            Parte cubo = new Parte(this.posicion);
+            cubo.cargarCubo();
+            this.añadirParte("Cubo", cubo);
+        }
+
+        public void cargarAxis()
+        {
+            Parte axis = new Parte(this.posicion);
+            axis.cargarCrossAxis();
+            this.añadirParte("Axis", axis);
+        }
        
     }
 }
