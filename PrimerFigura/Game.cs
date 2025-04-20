@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Reflection.Metadata;
@@ -21,23 +22,24 @@ namespace PrimerFigura
         private Vector2 lastMousePosition;
 
         public Game(int ancho, int alto, string titulo)
-            : base
-            (
-                GameWindowSettings.Default, new NativeWindowSettings()
-                {
-                    ClientSize = (ancho, alto),
-                    Title = titulo
-                }
-            )
+             : base
+             (
+                 GameWindowSettings.Default, new NativeWindowSettings()
+                 {
+                     ClientSize = (ancho, alto),
+                     Title = titulo,
+                     WindowState = WindowState.Normal,
+                     //Location = new Vector2i(500, 310),
+                 }
+             )
         {
             camera = new Camera(
-                new Vector3(-2.0f, 0.0f, 0.0f), 
-                new Vector3(0.0f, 0.0f, 0.0f),  
-                Vector3.UnitY                   
+                new Vector3(0.0f, 0.0f, -2.0f),
+                new Vector3(0.0f, 0.0f, 0.0f),
+                Vector3.UnitY
             );
         }
 
-       
         // el objeto shader
         Shader shader;
 
@@ -187,8 +189,8 @@ namespace PrimerFigura
             axis.cargarAxis();
             objetos.Add(axis);
 
-            Objeto coleccion = new Objeto(-4, 0, 0);
-            coleccion.cargarCubo();
+            Objeto coleccion = new Objeto(0, 1, 0);
+            coleccion.cargarCubos();
             objetos.Add(coleccion);
 
             // compilamos el shader
@@ -239,7 +241,7 @@ namespace PrimerFigura
 
             foreach(Objeto objeto in objetos)
             {
-                objeto.dibujar(shader);
+                objeto.dibujar(new Vector3 (0.0f, 0.0f, 0.0f),shader);
             }
 
 

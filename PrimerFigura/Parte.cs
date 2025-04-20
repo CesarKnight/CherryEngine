@@ -11,56 +11,34 @@ namespace PrimerFigura
 {
     class Parte
     {
-        // Esta es posicion absoluta
-        private Vector3 posicion;
+        // Esta es posicion relativa al centro de masas de objeto
+        private Vector3 offsetCoords;
         private List<Cara> Caras;
 
-        public Parte(float centroX, float centroY, float centroZ)
+        public Parte(float difX, float difY, float difZ)
         {
-            this.posicion = new Vector3(centroX, centroY, centroZ);
+            this.offsetCoords = new Vector3(difX, difY, difZ);
             this.Caras = [];
         }
 
-        public Parte(Vector3 pos)
+        public Parte(Vector3 offset)
         {
-            this.posicion = pos;
+            this.offsetCoords = offset;
             this.Caras = [];
         }
-
-        public Parte(float centroX, float centroY, float centroZ, List<Cara> caras)
-        {
-            this.posicion = new Vector3(centroX, centroY, centroZ);
-            this.Caras = caras;
-        }
-
 
         public void SetCaras(List<Cara> caras)
         {
             this.Caras = caras;
         }
 
-        public void dibujar(Shader shader)
+        public void dibujar(Vector3 posCentroObjeto, Shader shader)
         {
             foreach(Cara cara in this.Caras)
             {
-                cara.Dibujar(shader);
+                cara.Dibujar(posCentroObjeto + this.offsetCoords, shader);
             }
 
-        }
-        public Vector3 GetPosicion()
-        {
-            return this.posicion;
-        }
-
-        // Cambia la centro de la parte y de todas sus caras
-        public void SetPosicion(Vector3 nuevaPos)
-        {
-            Vector3 dif = this.posicion - nuevaPos;
-
-            foreach (Cara cara in this.Caras)
-            {
-                cara.Posicion += dif;
-            }
         }
 
         public void cargarCubo()

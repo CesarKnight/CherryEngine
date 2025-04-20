@@ -11,57 +11,27 @@ namespace PrimerFigura
 {
     class Objeto
     {
-        Vector3 posicion;
+        // Estas son coordenadas relativas al centro de masa del escenario
+        private Vector3 offsetCoords;
         Dictionary< string, Parte> partesLista;
 
         public Objeto(float centroX, float centroY, float centroZ)
         {
-            this.posicion = new Vector3(centroX, centroY, centroZ);
+            this.offsetCoords = new Vector3(centroX, centroY, centroZ);
             this.partesLista = new Dictionary<string, Parte> ();
         }
 
-        public Objeto(float centroX, float centroY, float centroZ, Dictionary< string , Parte> partes)
+        public Objeto(Vector3 posicion)
         {
-            this.posicion = new Vector3(centroX, centroY, centroZ);
-            this.partesLista = partes;
+            this.offsetCoords = posicion;
+            this.partesLista = new Dictionary<string, Parte>();
         }
 
-        public Vector3 getPosicion() {
-            return this.posicion;
-        }
-
-        // cambia la posicion del centro del objeto y de todas sus partes
-        public void setPosicion(Vector3 nuevaPos)
-        {
-            Vector3 dif = this.posicion - nuevaPos;
-            foreach (var parte in partesLista)
-            {
-                parte.Value.SetPosicion(parte.Value.GetPosicion() - dif);
-            }
-        }
-
-
-        // Cambia la posicion de una parte en relacion a la posicion del objeto
-        public void setPartePosicionRelativo(string nombre, float xDif, float yDif, float zDif)
-        {
-            if (this.partesLista.ContainsKey(nombre))
-            {
-                Vector3 antiguaPos = this.partesLista[nombre].GetPosicion();
-                Vector3 nuevaPos =
-                (
-                    antiguaPos.X + xDif,
-                    antiguaPos.Y + yDif,
-                    antiguaPos.Z + zDif
-                );
-                this.partesLista[nombre].SetPosicion(nuevaPos);
-            }
-        }
-
-        public void dibujar(Shader shader)
+        public void dibujar(Vector3 posCentroEscenario, Shader shader)
         {
             foreach (var parte in partesLista)
             {
-                parte.Value.dibujar(shader);
+                parte.Value.dibujar(posCentroEscenario + this.offsetCoords, shader);
             }
             
         }
@@ -76,16 +46,20 @@ namespace PrimerFigura
             this.partesLista.Remove(nombre);
         }
 
-        public void cargarCubo()
+        public void cargarCubos()
         {
-            Parte cubo = new Parte(this.posicion);
+            Parte cubo = new Parte(-4.0f,0.0f,0.0f);
             cubo.cargarCubo();
-            this.añadirParte("Cubo", cubo);
+            this.añadirParte("Cubo1", cubo);
+
+            Parte cubo1 = new Parte(4.0f,0.0f,0.0f);
+            cubo1.cargarCubo();
+            this.añadirParte("Cubo2", cubo1);
         }
 
         public void cargarAxis()
         {
-            Parte axis = new Parte(this.posicion);
+            Parte axis = new Parte(this.offsetCoords);
             axis.cargarCrossAxis();
             this.añadirParte("Axis", axis);
         }

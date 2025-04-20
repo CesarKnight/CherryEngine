@@ -12,7 +12,7 @@ namespace PrimerFigura
 {
     class Cara
     {
-        public Vector3 Posicion { get; set; }
+        // Los vertices son renderizados en relacion a la coordenada pasada en el metodo dibujar
         private List<VerticeColor> Vertices;
         private float[] verticesArray = [];
         private uint[] indicesArray = [];
@@ -29,19 +29,11 @@ namespace PrimerFigura
 
         public Cara()
         {
-            this.Posicion = new Vector3(0.0f, 0.0f, 0.0f);
             this.Vertices = new List<VerticeColor>();
         }
 
-        public Cara(float cx, float cy, float cz)
+        public Cara(List<VerticeColor> vertices, uint[] indices)
         {
-            this.Posicion = new Vector3(cx, cy, cz);
-            this.Vertices = new List<VerticeColor>();
-        }
-
-        public Cara(float cx, float cy, float cz, List<VerticeColor> vertices, uint[] indices)
-        {
-            this.Posicion = new Vector3(cx, cy, cz);
             this.Vertices = vertices;
             this.indicesArray = indices;
             inicializarBuffers();
@@ -112,10 +104,10 @@ namespace PrimerFigura
         }
 
 
-        public void Dibujar(Shader shader)
+        public void Dibujar(Vector3 pos, Shader shader)
         {
-            System.Console.WriteLine("Dibujando cara en posicion: " + this.Posicion);
-            Matrix4 model = Matrix4.CreateTranslation(this.Posicion);
+            System.Console.WriteLine("Dibujando cara en posicion: " + pos);
+            Matrix4 model = Matrix4.CreateTranslation(pos);
             int modelLocation = GL.GetUniformLocation(shader.Handle, "model");
             GL.UniformMatrix4(modelLocation, false, ref model);
 
