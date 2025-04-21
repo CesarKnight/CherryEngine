@@ -59,7 +59,7 @@ namespace PrimerFigura
 
         public void cargarAxis()
         {
-            Parte axis = new Parte(this.offsetCoords);
+            Parte axis = new Parte(0.0f, 0.0f, 0.0f);
             axis.cargarCrossAxis();
             this.añadirParte("Axis", axis);
         }

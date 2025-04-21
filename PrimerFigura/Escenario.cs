@@ -41,5 +41,13 @@ namespace PrimerFigura
                 objeto.Value.dibujar(posicion, shader);
             }
         }
+
+        public void CargarEscenarioPrueba()
+        {
+            Objeto cubitos = new Objeto(0.0f, 0.0f, 0.0f);
+            cubitos.cargarCubos();
+            cubitos.cargarAxis();
+            this.Objetos.Add("Cubitos", cubitos);
+        }
     }
 }
