@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 using OpenTK.Graphics.OpenGL4;
@@ -17,6 +18,16 @@ namespace PrimerFigura
         public float r {get; set;}
         public float g {get; set;}
         public float b {get; set;}
+
+        public VerticeColor()
+        {
+            this.x = 0.0f;
+            this.y = 0.0f;
+            this.z = 0.0f;
+            this.r = 1.0f;
+            this.g = 1.0f;
+            this.b = 1.0f;
+        }
 
         public VerticeColor(float x, float y, float z, float r, float g, float b)
         {

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 using OpenTK.Graphics.OpenGL4;
@@ -13,9 +14,18 @@ namespace PrimerFigura
     class Cara
     {
         // Los vertices son renderizados en relacion a la coordenada pasada en el metodo dibujar
-        private List<VerticeColor> Vertices;
+        public List<VerticeColor> Vertices { get; }
+
+        private uint[] _indicesArray = [];
+        
         private float[] verticesArray = [];
-        private uint[] indicesArray = [];
+
+        [JsonPropertyOrder(-1)]
+        public uint[] IndicesArray
+        {
+            get { return _indicesArray; }
+        }
+
 
         // %%%%%%%% Elementos de OpenGL %%%%%%%%%%%%
 
@@ -32,10 +42,11 @@ namespace PrimerFigura
             this.Vertices = new List<VerticeColor>();
         }
 
-        public Cara(List<VerticeColor> vertices, uint[] indices)
+        [JsonConstructor]
+        public Cara(List<VerticeColor> vertices, uint[] indicesArray)
         {
             this.Vertices = vertices;
-            this.indicesArray = indices;
+            this._indicesArray = indicesArray;
             inicializarBuffers();
         }
 
@@ -69,7 +80,7 @@ namespace PrimerFigura
 
             // y este buffer de indices
             GL.BindBuffer(BufferTarget.ElementArrayBuffer, ElementBufferObject);
-            GL.BufferData(BufferTarget.ElementArrayBuffer, indicesArray.Length * sizeof(uint), indicesArray, BufferUsageHint.StaticDraw);
+            GL.BufferData(BufferTarget.ElementArrayBuffer, _indicesArray.Length * sizeof(uint), _indicesArray, BufferUsageHint.StaticDraw);
 
             // configuramos el puntero para los vertices dando a entender
             // que tiene 3 valores floats para los vertices
@@ -87,7 +98,7 @@ namespace PrimerFigura
             {
                 this.Vertices.Add(verticeColor);
             }
-            this.indicesArray = indices;
+            this._indicesArray = indices;
             inicializarBuffers();
         }
 
@@ -99,20 +110,20 @@ namespace PrimerFigura
                 verticeColor.SetColor(hexColor);
                 this.Vertices.Add(verticeColor);
             }
-            this.indicesArray = indices;
+            this._indicesArray = indices;
             inicializarBuffers();
         }
 
 
         public void Dibujar(Vector3 pos, Shader shader)
         {
-            System.Console.WriteLine("Dibujando cara en posicion: " + pos);
+
             Matrix4 model = Matrix4.CreateTranslation(pos);
             int modelLocation = GL.GetUniformLocation(shader.Handle, "model");
             GL.UniformMatrix4(modelLocation, false, ref model);
 
             GL.BindVertexArray(VertexArrayObject);
-            GL.DrawElements(PrimitiveType.Triangles, this.indicesArray.Length, DrawElementsType.UnsignedInt, 0);
+            GL.DrawElements(PrimitiveType.Triangles, this._indicesArray.Length, DrawElementsType.UnsignedInt, 0);
         }
 
         public void ChangeColor(float r, float g, float b)

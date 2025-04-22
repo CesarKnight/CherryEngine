@@ -6,6 +6,7 @@ using System.Linq;
 using System.Reflection.Metadata;
 using System.Text;
 using System.Threading.Tasks;
+using System.Text.Json;
 
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
@@ -60,7 +61,7 @@ namespace PrimerFigura
             base.OnLoad();
             // Inicializamos el escenario en 0,0,0
             escenario0 = new Escenario(new Vector3(0, 0, 0));
-            escenario0.CargarEscenarioPrueba();
+            escenario0.CargarEscenario("Escenario.json");
             // Color de fondo  
             GL.ClearColor(0.5f, 0.1f, 0.3f, 1.0f);
             GL.Enable(EnableCap.DepthTest);
@@ -84,6 +85,11 @@ namespace PrimerFigura
                 Close();
             if (KeyboardState.IsKeyDown(Keys.Tab))
                 CursorState = CursorState == CursorState.Normal ? CursorState.Grabbed : CursorState.Normal;
+            if (KeyboardState.IsKeyDown(Keys.G))
+            {
+                if(escenario0 != null) 
+                    escenario0.GuardarEscenario("Escenario.json");
+            }
 
             camera.ProcessKeyboardInput(KeyboardState, (float)args.Time);
 
