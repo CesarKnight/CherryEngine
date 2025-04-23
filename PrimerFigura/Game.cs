@@ -65,10 +65,10 @@ namespace PrimerFigura
             // Color de fondo  
             GL.ClearColor(0.5f, 0.1f, 0.3f, 1.0f);
             GL.Enable(EnableCap.DepthTest);
-
+            
             CursorState = CursorState.Grabbed;
-
-            // compilamos el shader  
+            
+            // compilamos el shader
             string baseDir = AppDomain.CurrentDomain.BaseDirectory;
             string shaderDir = Path.GetFullPath(Path.Combine(baseDir, @"..\..\..\Shaders"));
             string vertexPath = Path.Combine(shaderDir, "shader.vert");

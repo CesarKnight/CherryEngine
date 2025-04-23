@@ -15,7 +15,7 @@ namespace PrimerFigura
         // Estas son coordenadas relativas al centro de masa del escenario
         private Vector3 _offsetCoords;
         public Dictionary< string, Parte> PartesLista { get; set; }
-
+      
         [JsonPropertyOrder(-1)]
         public float[] OffsetCoords
         {
@@ -66,12 +66,12 @@ namespace PrimerFigura
         {
             this.PartesLista.Add(nombre, nuevaParte);
         }
-
+      
         public void borrarParte(string nombre)
         {
             this.PartesLista.Remove(nombre);
         }
-
+        
         public void cargarCubos()
         {
             Parte cubo = new Parte(-4.0f,0.0f,0.0f);
@@ -89,6 +89,5 @@ namespace PrimerFigura
             axis.cargarCrossAxis();
             this.añadirParte("Axis", axis);
         }
-       
     }
 }
