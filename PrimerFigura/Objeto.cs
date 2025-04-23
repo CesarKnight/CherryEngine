@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 using OpenTK.Graphics.OpenGL4;
@@ -11,81 +12,82 @@ namespace PrimerFigura
 {
     class Objeto
     {
-        float centroX, centroY, centroZ;
-        float[] vertices = [];
-        uint[] indices = [];
+        // Estas son coordenadas relativas al centro de masa del escenario
+        private Vector3 _offsetCoords;
+        public Dictionary< string, Parte> PartesLista { get; set; }
+      
+        [JsonPropertyOrder(-1)]
+        public float[] OffsetCoords
+        {
+            get
+            {
+                float[] posicionArray = new float[3];
+                posicionArray[0] = this._offsetCoords.X;
+                posicionArray[1] = this._offsetCoords.Y;
+                posicionArray[2] = this._offsetCoords.Z;
+                return posicionArray;
+            }
+            set
+            {
+                _offsetCoords.X = value[0];
+                _offsetCoords.Y = value[1];
+                _offsetCoords.Z = value[2];
+            }
+        }
 
-        // en este objeto se guardan los vertices para que sean enviados a la gpu de un saque
-        // el int es solo la id del objeto
-        int BufferObjetoVertices;
-        // declaramos el objeto de array de vertices
-        int VertexArrayObject;
-
-        int ElementBufferObject;
+        public Objeto()
+        {
+            this._offsetCoords = new Vector3(0.0f, 0.0f, 0.0f);
+            this.PartesLista = new Dictionary<string, Parte>();
+        }
 
         public Objeto(float centroX, float centroY, float centroZ)
         {
-            this.centroX = centroX;
-            this.centroY = centroY;
-            this.centroZ = centroZ;
+            this._offsetCoords = new Vector3(centroX, centroY, centroZ);
+            this.PartesLista = new Dictionary<string, Parte> ();
         }
 
-        public Objeto(float centroX, float centroY, float centroZ, float[] vertices , uint[] indices)
+        public Objeto(Vector3 posicion)
         {
-            this.centroX = centroX;
-            this.centroY = centroY;
-            this.centroZ = centroZ;
-            this.vertices = vertices;
-            this.indices = indices;
-
-            inicializarBuffers();
+            this._offsetCoords = posicion;
+            this.PartesLista = new Dictionary<string, Parte>();
         }
 
-        private void inicializarBuffers()
+        public void dibujar(Vector3 posCentroEscenario, Shader shader)
         {
-            // asignamos la id del buffer de vertices
-            BufferObjetoVertices = GL.GenBuffer();
-            ElementBufferObject = GL.GenBuffer();
-
-            // generamos el objeto de array de vertices y asignamos a opengl
-            VertexArrayObject = GL.GenVertexArray();
-            GL.BindVertexArray(VertexArrayObject);
-
-            // le decimos a la gpu que vamos a usar este buffer
-            GL.BindBuffer(BufferTarget.ArrayBuffer, BufferObjetoVertices);
-            GL.BufferData(BufferTarget.ArrayBuffer, vertices.Length * sizeof(float), vertices, BufferUsageHint.StaticDraw);
-
-            GL.BindBuffer(BufferTarget.ElementArrayBuffer, ElementBufferObject);
-            GL.BufferData(BufferTarget.ElementArrayBuffer, indices.Length * sizeof(uint), indices, BufferUsageHint.StaticDraw);
-
-            // configuramos el puntero para los vertices dando a entender que tiene 3 valores floats
-            GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, 3 * sizeof(float), 0);
-            GL.EnableVertexAttribArray(0);
+            foreach (var parte in PartesLista)
+            {
+                parte.Value.dibujar(posCentroEscenario + this._offsetCoords, shader);
+            }
+            
         }
 
-        public void cargar(float[] vertices, uint[] indices)
+        public void añadirParte(string nombre, Parte nuevaParte)
         {
-            this.vertices = vertices;
-            this.indices = indices;
+            this.PartesLista.Add(nombre, nuevaParte);
+        }
+      
+        public void borrarParte(string nombre)
+        {
+            this.PartesLista.Remove(nombre);
+        }
+        
+        public void cargarCubos()
+        {
+            Parte cubo = new Parte(-4.0f,0.0f,0.0f);
+            cubo.cargarCubo();
+            this.añadirParte("Cubo1", cubo);
 
-            inicializarBuffers();
+            Parte cubo1 = new Parte(4.0f,0.0f,0.0f);
+            cubo1.cargarCubo();
+            this.añadirParte("Cubo2", cubo1);
         }
 
-
-        public void dibujar(Shader shader)
+        public void cargarAxis()
         {
-            Matrix4 model = Matrix4.CreateTranslation(centroX, centroY, centroZ);   
-            int modelLocation = GL.GetUniformLocation(shader.Handle, "model");
-            GL.UniformMatrix4(modelLocation, false, ref model);
-            GL.BindVertexArray(VertexArrayObject);
-            GL.DrawElements(PrimitiveType.Triangles, indices.Length, DrawElementsType.UnsignedInt, 0);
-        }
-
-        public void borrar()
-        {
-            GL.DeleteBuffer(BufferObjetoVertices);
-            GL.DeleteBuffer(ElementBufferObject);
-            GL.DeleteVertexArray(VertexArrayObject);
+            Parte axis = new Parte(0.0f, 0.0f, 0.0f);
+            axis.cargarCrossAxis();
+            this.añadirParte("Axis", axis);
         }
     }
 }
