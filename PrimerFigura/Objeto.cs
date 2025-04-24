@@ -14,9 +14,12 @@ namespace PrimerFigura
     {
         // Estas son coordenadas relativas al centro de masa del escenario
         private Vector3 _offsetCoords;
+        private Vector3 _rotation;
+        private float _scale;
+
+        [JsonPropertyOrder(4)]
         public Dictionary< string, Parte> PartesLista { get; set; }
-      
-        [JsonPropertyOrder(-1)]
+        
         public float[] OffsetCoords
         {
             get
@@ -29,28 +32,51 @@ namespace PrimerFigura
             }
             set
             {
-                _offsetCoords.X = value[0];
-                _offsetCoords.Y = value[1];
-                _offsetCoords.Z = value[2];
+                this.Trasladar(value[0], value[1], value[2]);
             }
         }
+        public float[] Rotation
+        {
+            get
+            {
+                float[] rotacionArray = new float[3];
+                rotacionArray[0] = this._rotation.X;
+                rotacionArray[1] = this._rotation.Y;
+                rotacionArray[2] = this._rotation.Z;
+                return rotacionArray;
+            }
+            set
+            {
+                this.Rotar(value[0], value[1], value[2]);
+            }
+        }
+
+        public float Scale
+        {
+            get { return this._scale; }
+            set 
+            {
+                this.Escalar(value);
+            }
+        }
+
 
         public Objeto()
         {
             this._offsetCoords = new Vector3(0.0f, 0.0f, 0.0f);
+            this._rotation = new Vector3(0.0f, 0.0f, 0.0f);
+            this._scale = 1.0f;
             this.PartesLista = new Dictionary<string, Parte>();
         }
 
-        public Objeto(float centroX, float centroY, float centroZ)
+        public Objeto(float centroX, float centroY, float centroZ): this()
         {
             this._offsetCoords = new Vector3(centroX, centroY, centroZ);
-            this.PartesLista = new Dictionary<string, Parte> ();
         }
 
-        public Objeto(Vector3 posicion)
+        public Objeto(Vector3 posicion): this()
         {
             this._offsetCoords = posicion;
-            this.PartesLista = new Dictionary<string, Parte>();
         }
 
         public void dibujar(Vector3 posCentroEscenario, Shader shader)
@@ -60,6 +86,53 @@ namespace PrimerFigura
                 parte.Value.dibujar(posCentroEscenario + this._offsetCoords, shader);
             }
             
+        }
+
+        public void Escalar(float multiplicador)
+        {
+            this._scale += multiplicador;
+            Matrix4 scaleTrans = Matrix4.CreateScale(this._scale);
+            foreach (var parte in PartesLista)
+            {
+                Vector4 parteRelativePos = new Vector4(
+                    parte.Value.OffsetCoords[0],
+                    parte.Value.OffsetCoords[1],
+                    parte.Value.OffsetCoords[2],
+                    1.0f
+                );
+                Vector4 newParteOffset = parteRelativePos * scaleTrans;
+                parte.Value.OffsetCoords = [newParteOffset.X, newParteOffset.Y, newParteOffset.Z];
+                parte.Value._scale = this._scale;
+            }
+        }
+
+        public void Rotar(float x, float y, float z)
+        {
+            this._rotation.X += x;
+            this._rotation.Y += y;
+            this._rotation.Z += z;
+            Matrix4 rotationTrans = Matrix4.CreateRotationX(MathHelper.DegreesToRadians(this._rotation.X)) *
+                                         Matrix4.CreateRotationY(MathHelper.DegreesToRadians(this._rotation.Y)) *
+                                         Matrix4.CreateRotationZ(MathHelper.DegreesToRadians(this._rotation.Z));
+            foreach (var parte in PartesLista)
+            {
+                Vector4 parteRelativePos = new Vector4(
+                    parte.Value.OffsetCoords[0],
+                    parte.Value.OffsetCoords[1],
+                    parte.Value.OffsetCoords[2],
+                    1.0f
+                );
+                Vector4 newParteOffset = parteRelativePos * rotationTrans;
+                parte.Value.OffsetCoords = [newParteOffset.X, newParteOffset.Y, newParteOffset.Z];
+                parte.Value.Rotation = [this._rotation.X, this._rotation.Y, this._rotation.Z];
+            }
+        }
+
+        public void Trasladar(float x, float y, float z)
+        {
+            this._offsetCoords.X += x;
+            this._offsetCoords.Y += y;
+            this._offsetCoords.Z += z;
         }
 
         public void añadirParte(string nombre, Parte nuevaParte)
@@ -74,13 +147,33 @@ namespace PrimerFigura
         
         public void cargarCubos()
         {
-            Parte cubo = new Parte(-4.0f,0.0f,0.0f);
+            Parte cubo = new Parte(-1.0f,-1.0f,0.0f);
             cubo.cargarCubo();
             this.añadirParte("Cubo1", cubo);
 
-            Parte cubo1 = new Parte(4.0f,0.0f,0.0f);
+            Parte cubo1 = new Parte(0.0f,-1.0f,0.0f);
             cubo1.cargarCubo();
             this.añadirParte("Cubo2", cubo1);
+
+            Parte cubo2 = new Parte(1.0f, -1.0f, 0.0f);
+            cubo2.cargarCubo();
+            this.añadirParte("Cubo3", cubo2);
+
+            Parte cubo3 = new Parte(1.0f, 0.0f, 0.0f);
+            cubo3.cargarCubo();
+            this.añadirParte("Cubo4", cubo3);
+
+            Parte cubo4 = new Parte(-1.0f, 0.0f, 0.0f);
+            cubo4.cargarCubo();
+            this.añadirParte("Cubo5", cubo4);
+
+            Parte cubo5 = new Parte(-1.0f, 1.0f, 0.0f);
+            cubo5.cargarCubo();
+            this.añadirParte("Cubo6", cubo5);
+
+            Parte cubo6 = new Parte(1.0f, 1.0f, 0.0f);
+            cubo6.cargarCubo();
+            this.añadirParte("Cubo7", cubo6);
         }
 
         public void cargarAxis()

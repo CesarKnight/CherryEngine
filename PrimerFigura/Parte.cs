@@ -14,8 +14,12 @@ namespace PrimerFigura
     {
         // Esta es posicion relativa al centro de masas de objeto
         private Vector3 _offsetCoords;
-        public List<Cara> Caras { get; set; }
+        private Vector3 _rotation;
+        public float _scale;
 
+        [JsonPropertyOrder(4)]
+        public List<Cara> Caras { get; set; }
+        
         public float[] OffsetCoords
         {
             get
@@ -28,38 +32,80 @@ namespace PrimerFigura
             }
             set
             {
-                _offsetCoords.X = value[0];
-                _offsetCoords.Y = value[1];
-                _offsetCoords.Z = value[2];
+                this._offsetCoords = new Vector3(0,0,0);
+                this.Trasladar(value[0], value[1], value[2]);
+            }
+        }
+        public float[] Rotation
+        {
+            get
+            {
+                float[] rotacionArray = new float[3];
+                rotacionArray[0] = this._rotation.X;
+                rotacionArray[1] = this._rotation.Y;
+                rotacionArray[2] = this._rotation.Z;
+                return rotacionArray;
+            }
+            set
+            {
+                this._rotation = new Vector3(0, 0, 0);
+                this.Rotar(value[0], value[1], value[2]);
+            }
+        }
+
+        public float Scale
+        {
+            get { return this._scale; }
+            set 
+            { 
+                this._scale = 0;
+                this.Escalar(value);
             }
         }
 
         public Parte()
         {
             this._offsetCoords = new Vector3(0.0f, 0.0f, 0.0f);
+            this._rotation = new Vector3(0.0f, 0.0f, 0.0f);
+            this._scale = 1.0f;
             this.Caras = new List<Cara>();
         }
 
-        public Parte(float difX, float difY, float difZ)
+        public Parte(float difX, float difY, float difZ) : this()
         {
             this._offsetCoords = new Vector3(difX, difY, difZ);
-            this.Caras = [];
         }
 
-        public Parte(Vector3 offset)
+        public Parte(Vector3 offset) : this()
         {
             this._offsetCoords = offset;
-            this.Caras = [];
         }
-
 
         public void dibujar(Vector3 posCentroObjeto, Shader shader)
         {
             foreach(Cara cara in this.Caras)
             {
-                cara.Dibujar(posCentroObjeto + this._offsetCoords, shader);
+                cara.Dibujar(posCentroObjeto + this._offsetCoords, this._rotation, this._scale, shader);
             }
+        }
 
+        public void Escalar(float multiplicador)
+        {
+            this._scale += multiplicador;
+        }
+
+        public void Rotar(float x, float y, float z)
+        {
+            this._rotation.X += x;
+            this._rotation.Y += y;
+            this._rotation.Z += z;
+        }
+
+        public void Trasladar(float x, float y, float z)
+        {
+            this._offsetCoords.X += x;
+            this._offsetCoords.Y += y;
+            this._offsetCoords.Z += z;
         }
 
         public void cargarCubo()
