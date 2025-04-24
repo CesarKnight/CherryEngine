@@ -58,7 +58,7 @@ namespace PrimerFigura
             get { return this._scale; }
             set 
             { 
-                this._scale = 0;
+                this._scale = 0.0f;
                 this.Escalar(value);
             }
         }

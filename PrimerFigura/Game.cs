@@ -62,7 +62,7 @@ namespace PrimerFigura
             // Inicializamos el escenario en 0,0,0
             escenario0 = new Escenario(new Vector3(0, 0, 0));
             escenario0.CargarEscenarioPrueba();
-            escenario0.Rotation = [90.0f, 0.0f, 0.0f];
+
             // Color de fondo  
             GL.ClearColor(0.5f, 0.1f, 0.3f, 1.0f);
             GL.Enable(EnableCap.DepthTest);

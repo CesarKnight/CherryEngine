@@ -29,6 +29,7 @@ namespace PrimerFigura
                 return posicionArray; 
             }
             set {
+                _posicion = new Vector3(0,0,0);
                 this.Trasladar(value[0], value[1], value[2]);
             }
         }
@@ -45,6 +46,7 @@ namespace PrimerFigura
             }
             set
             {
+                _rotation = new Vector3(0, 0, 0);
                 this.Rotar(value[0], value[1], value[2]);
             }
         }
@@ -54,6 +56,7 @@ namespace PrimerFigura
             get { return this._scale; }
             set
             {
+                _scale = 0.0f;
                 this.Escalar(value);
             }
         }
@@ -67,6 +70,8 @@ namespace PrimerFigura
         public Escenario()
         {
             this._posicion = new Vector3(0.0f, 0.0f, 0.0f);
+            this._rotation = new Vector3(0.0f, 0.0f, 0.0f);
+            this._scale = 1.0f;
             this.Objetos = new Dictionary<string, Objeto>(); 
         }
         public Escenario(float x, float y, float z):this()
@@ -109,7 +114,7 @@ namespace PrimerFigura
             this._rotation.X += x;
             this._rotation.Y += y;
             this._rotation.Z += z;
-            Matrix4 rotationTrans = Matrix4.CreateRotationX(MathHelper.DegreesToRadians(this._rotation.X)) *
+            Matrix4 rotationTransform = Matrix4.CreateRotationX(MathHelper.DegreesToRadians(this._rotation.X)) *
                                          Matrix4.CreateRotationY(MathHelper.DegreesToRadians(this._rotation.Y)) *
                                          Matrix4.CreateRotationZ(MathHelper.DegreesToRadians(this._rotation.Z));
             foreach (var objeto in Objetos)
@@ -120,7 +125,7 @@ namespace PrimerFigura
                     objeto.Value.OffsetCoords[2],
                     1.0f
                 );
-                Vector4 newObjetoOffset = objetoRelativePos * rotationTrans;
+                Vector4 newObjetoOffset = objetoRelativePos * rotationTransform;
                 objeto.Value.OffsetCoords = [newObjetoOffset.X, newObjetoOffset.Y, newObjetoOffset.Z];
                 objeto.Value.Rotation = [this._rotation.X, this._rotation.Y, this._rotation.Z];
             }
@@ -164,12 +169,11 @@ namespace PrimerFigura
         {
             Objeto cubitos = new Objeto(0.0f, 0.0f, 3.0f);
             cubitos.cargarCubos();
+            cubitos.Rotar(90, 0, 0);
             this.Objetos.Add("U", cubitos);
 
-
-            Objeto U2 = new Objeto(-5.0f, 0.0f, 0.0f);
+            Objeto U2 = new Objeto(5.0f, 0.0f, 0.0f);
             U2.cargarCubos();
-            U2.Rotation = [0.0f, 45.0f, 0.0f];
             this.Objetos.Add("U2", U2);
 
             Objeto eje = new Objeto(new Vector3(0,0,0));

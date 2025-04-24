@@ -32,6 +32,7 @@ namespace PrimerFigura
             }
             set
             {
+                this._offsetCoords = new Vector3(0, 0, 0);
                 this.Trasladar(value[0], value[1], value[2]);
             }
         }
@@ -47,6 +48,7 @@ namespace PrimerFigura
             }
             set
             {
+                this._rotation = new Vector3(0, 0, 0);
                 this.Rotar(value[0], value[1], value[2]);
             }
         }
@@ -56,6 +58,7 @@ namespace PrimerFigura
             get { return this._scale; }
             set 
             {
+                this._scale = 0.0f;
                 this.Escalar(value);
             }
         }
@@ -149,6 +152,7 @@ namespace PrimerFigura
         {
             Parte cubo = new Parte(-1.0f,-1.0f,0.0f);
             cubo.cargarCubo();
+            cubo.Rotation = [0.0f, 45.0f, 0.0f];
             this.añadirParte("Cubo1", cubo);
 
             Parte cubo1 = new Parte(0.0f,-1.0f,0.0f);
@@ -157,6 +161,7 @@ namespace PrimerFigura
 
             Parte cubo2 = new Parte(1.0f, -1.0f, 0.0f);
             cubo2.cargarCubo();
+            cubo2.Rotation = [0.0f, -45.0f, 0.0f];
             this.añadirParte("Cubo3", cubo2);
 
             Parte cubo3 = new Parte(1.0f, 0.0f, 0.0f);
