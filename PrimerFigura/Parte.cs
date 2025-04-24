@@ -81,12 +81,16 @@ namespace PrimerFigura
             this._offsetCoords = offset;
         }
 
-        public void dibujar(Vector3 posCentroObjeto, Vector3 parentRotation, Shader shader)
+        public void dibujar(Vector3 posCentroObjeto, Matrix4 ObjetoRotacion, Shader shader)
         {
+            Matrix4 Rotation = Matrix4.CreateRotationX(MathHelper.DegreesToRadians(this._rotation.X)) *
+                                        Matrix4.CreateRotationY(MathHelper.DegreesToRadians(this._rotation.Y)) *
+                                        Matrix4.CreateRotationZ(MathHelper.DegreesToRadians(this._rotation.Z));
+
+            Matrix4 finalRotation = Rotation * ObjetoRotacion;
             foreach (Cara cara in this.Caras)
             {
-                Vector3 combinedRotation = parentRotation + this._rotation;
-                cara.Dibujar(posCentroObjeto + this._offsetCoords, combinedRotation, this._scale, shader);
+                cara.Dibujar(posCentroObjeto + this._offsetCoords, finalRotation, this._scale, shader);
             }
         }
 

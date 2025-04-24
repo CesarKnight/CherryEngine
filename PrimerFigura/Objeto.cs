@@ -82,12 +82,16 @@ namespace PrimerFigura
             this._offsetCoords = posicion;
         }
 
-        public void dibujar(Vector3 posCentroEscenario, Vector3 parentRotation, Shader shader)
+        public void dibujar(Vector3 posCentroEscenario, Matrix4 EscenarioRotacion, Shader shader)
         {
-            Vector3 combinedRotation = parentRotation + this._rotation;
+            Matrix4 Rotation = Matrix4.CreateRotationX(MathHelper.DegreesToRadians(this._rotation.X)) *
+                                        Matrix4.CreateRotationY(MathHelper.DegreesToRadians(this._rotation.Y)) *
+                                        Matrix4.CreateRotationZ(MathHelper.DegreesToRadians(this._rotation.Z));
+
+            Matrix4 finalRotation = Rotation * EscenarioRotacion;
             foreach (var parte in PartesLista)
             {
-                parte.Value.dibujar(posCentroEscenario + this._offsetCoords, combinedRotation, shader);
+                parte.Value.dibujar(posCentroEscenario + this._offsetCoords, finalRotation, shader);
             }
         }
 
@@ -111,7 +115,6 @@ namespace PrimerFigura
 
         public void Rotar(float x, float y, float z)
         {
-            // Update local rotation
             this._rotation.X += x;
             this._rotation.Y += y;
             this._rotation.Z += z;

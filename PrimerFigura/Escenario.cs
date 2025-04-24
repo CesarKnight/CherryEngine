@@ -85,9 +85,13 @@ namespace PrimerFigura
 
         public void dibujar(Shader shader)
         {
+            Matrix4 Rotation = Matrix4.CreateRotationX(MathHelper.DegreesToRadians(this._rotation.X)) *
+                                        Matrix4.CreateRotationY(MathHelper.DegreesToRadians(this._rotation.Y)) *
+                                        Matrix4.CreateRotationZ(MathHelper.DegreesToRadians(this._rotation.Z));
+
             foreach (var objeto in Objetos)
             {
-                objeto.Value.dibujar(_posicion, _rotation, shader);
+                objeto.Value.dibujar(_posicion, Rotation, shader);
             }
         }
 
@@ -112,7 +116,6 @@ namespace PrimerFigura
 
         public void Rotar(float x, float y, float z)
         {
-            // Update local rotation
             this._rotation.X += x;
             this._rotation.Y += y;
             this._rotation.Z += z;
