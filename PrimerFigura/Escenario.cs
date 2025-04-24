@@ -87,47 +87,56 @@ namespace PrimerFigura
         {
             foreach (var objeto in Objetos)
             {
-                objeto.Value.dibujar(_posicion, shader);
+                objeto.Value.dibujar(_posicion, _rotation, shader);
             }
         }
 
         public void Escalar(float multiplicador)
         {
-            this._scale += multiplicador;
-            Matrix4 scaleTrans = Matrix4.CreateScale(this._scale);
+            this._scale *= multiplicador;  // Multiply instead of add
             foreach (var objeto in Objetos)
             {
-                Vector4 objetoRelativePos = new Vector4(
-                    objeto.Value.OffsetCoords[0],
+                // Keep original positions, apply new scale
+                Vector4 originalPos = new Vector4(
+                    objeto.Value.OffsetCoords[0],  // Remove previous scale
                     objeto.Value.OffsetCoords[1],
                     objeto.Value.OffsetCoords[2],
                     1.0f
                 );
-                Vector4 newObjetoOffset = objetoRelativePos * scaleTrans;
-                objeto.Value.OffsetCoords = [newObjetoOffset.X, newObjetoOffset.Y, newObjetoOffset.Z];
-                objeto.Value.Scale = this._scale;
+
+                Vector4 newPos = originalPos * Matrix4.CreateScale(this._scale);  // Apply new scale
+                objeto.Value.OffsetCoords = [newPos.X, newPos.Y, newPos.Z];
+                objeto.Value.Escalar(this._scale);  
             }
         }
 
         public void Rotar(float x, float y, float z)
         {
+            // Update local rotation
             this._rotation.X += x;
             this._rotation.Y += y;
             this._rotation.Z += z;
-            Matrix4 rotationTransform = Matrix4.CreateRotationX(MathHelper.DegreesToRadians(this._rotation.X)) *
-                                         Matrix4.CreateRotationY(MathHelper.DegreesToRadians(this._rotation.Y)) *
-                                         Matrix4.CreateRotationZ(MathHelper.DegreesToRadians(this._rotation.Z));
+
+            // Create quaternion from the delta rotation only
+            Quaternion rotation = Quaternion.FromEulerAngles(
+                MathHelper.DegreesToRadians(x),
+                MathHelper.DegreesToRadians(y),
+                MathHelper.DegreesToRadians(z)
+            );
+
             foreach (var objeto in Objetos)
             {
-                Vector4 objetoRelativePos = new Vector4(
+                Vector3 originalPos = new Vector3(
                     objeto.Value.OffsetCoords[0],
                     objeto.Value.OffsetCoords[1],
-                    objeto.Value.OffsetCoords[2],
-                    1.0f
+                    objeto.Value.OffsetCoords[2]
                 );
-                Vector4 newObjetoOffset = objetoRelativePos * rotationTransform;
-                objeto.Value.OffsetCoords = [newObjetoOffset.X, newObjetoOffset.Y, newObjetoOffset.Z];
-                objeto.Value.Rotation = [this._rotation.X, this._rotation.Y, this._rotation.Z];
+
+                Vector3 newPos = Vector3.Transform(originalPos, rotation);
+                objeto.Value.OffsetCoords = [newPos.X, newPos.Y, newPos.Z];
+
+                // Do NOT modify object rotations here
+                // Each object maintains its own local rotation
             }
         }
 
@@ -169,6 +178,7 @@ namespace PrimerFigura
         {
             Objeto cubitos = new Objeto(0.0f, 0.0f, 3.0f);
             cubitos.cargarCubos();
+            cubitos.Scale = 2f;
             cubitos.Rotar(90, 0, 0);
             this.Objetos.Add("U", cubitos);
 

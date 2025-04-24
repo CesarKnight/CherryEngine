@@ -58,7 +58,7 @@ namespace PrimerFigura
             get { return this._scale; }
             set 
             { 
-                this._scale = 0.0f;
+                this._scale = 1.0f;
                 this.Escalar(value);
             }
         }
@@ -81,17 +81,18 @@ namespace PrimerFigura
             this._offsetCoords = offset;
         }
 
-        public void dibujar(Vector3 posCentroObjeto, Shader shader)
+        public void dibujar(Vector3 posCentroObjeto, Vector3 parentRotation, Shader shader)
         {
-            foreach(Cara cara in this.Caras)
+            foreach (Cara cara in this.Caras)
             {
-                cara.Dibujar(posCentroObjeto + this._offsetCoords, this._rotation, this._scale, shader);
+                Vector3 combinedRotation = parentRotation + this._rotation;
+                cara.Dibujar(posCentroObjeto + this._offsetCoords, combinedRotation, this._scale, shader);
             }
         }
 
         public void Escalar(float multiplicador)
         {
-            this._scale += multiplicador;
+            this._scale *= multiplicador;
         }
 
         public void Rotar(float x, float y, float z)

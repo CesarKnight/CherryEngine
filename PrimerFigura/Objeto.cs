@@ -58,7 +58,7 @@ namespace PrimerFigura
             get { return this._scale; }
             set 
             {
-                this._scale = 0.0f;
+                this._scale = 1.0f;
                 this.Escalar(value);
             }
         }
@@ -82,52 +82,61 @@ namespace PrimerFigura
             this._offsetCoords = posicion;
         }
 
-        public void dibujar(Vector3 posCentroEscenario, Shader shader)
+        public void dibujar(Vector3 posCentroEscenario, Vector3 parentRotation, Shader shader)
         {
+            Vector3 combinedRotation = parentRotation + this._rotation;
             foreach (var parte in PartesLista)
             {
-                parte.Value.dibujar(posCentroEscenario + this._offsetCoords, shader);
+                parte.Value.dibujar(posCentroEscenario + this._offsetCoords, combinedRotation, shader);
             }
-            
         }
 
         public void Escalar(float multiplicador)
         {
-            this._scale += multiplicador;
-            Matrix4 scaleTrans = Matrix4.CreateScale(this._scale);
+            this._scale *= multiplicador;  // Multiply instead of add
             foreach (var parte in PartesLista)
             {
-                Vector4 parteRelativePos = new Vector4(
-                    parte.Value.OffsetCoords[0],
-                    parte.Value.OffsetCoords[1],
-                    parte.Value.OffsetCoords[2],
+                Vector4 originalPos = new Vector4(
+                    parte.Value.OffsetCoords[0] ,
+                    parte.Value.OffsetCoords[1] ,
+                    parte.Value.OffsetCoords[2] ,
                     1.0f
                 );
-                Vector4 newParteOffset = parteRelativePos * scaleTrans;
-                parte.Value.OffsetCoords = [newParteOffset.X, newParteOffset.Y, newParteOffset.Z];
-                parte.Value._scale = this._scale;
+
+                Vector4 newPos = originalPos * Matrix4.CreateScale(this.Scale);
+                parte.Value.OffsetCoords = [newPos.X, newPos.Y, newPos.Z];
+                parte.Value.Escalar(multiplicador);
             }
         }
 
         public void Rotar(float x, float y, float z)
         {
+            // Update local rotation
             this._rotation.X += x;
             this._rotation.Y += y;
             this._rotation.Z += z;
-            Matrix4 rotationTrans = Matrix4.CreateRotationX(MathHelper.DegreesToRadians(this._rotation.X)) *
-                                         Matrix4.CreateRotationY(MathHelper.DegreesToRadians(this._rotation.Y)) *
-                                         Matrix4.CreateRotationZ(MathHelper.DegreesToRadians(this._rotation.Z));
+
+            // Create quaternion from local rotation only
+            Quaternion rotation = Quaternion.FromEulerAngles(
+                MathHelper.DegreesToRadians(x),
+                MathHelper.DegreesToRadians(y),
+                MathHelper.DegreesToRadians(z)
+            );
+
             foreach (var parte in PartesLista)
             {
-                Vector4 parteRelativePos = new Vector4(
+                // Transform positions using the delta rotation
+                Vector3 originalPos = new Vector3(
                     parte.Value.OffsetCoords[0],
                     parte.Value.OffsetCoords[1],
-                    parte.Value.OffsetCoords[2],
-                    1.0f
+                    parte.Value.OffsetCoords[2]
                 );
-                Vector4 newParteOffset = parteRelativePos * rotationTrans;
-                parte.Value.OffsetCoords = [newParteOffset.X, newParteOffset.Y, newParteOffset.Z];
-                parte.Value.Rotation = [this._rotation.X, this._rotation.Y, this._rotation.Z];
+
+                Vector3 newPos = Vector3.Transform(originalPos, rotation);
+                parte.Value.OffsetCoords = [newPos.X, newPos.Y, newPos.Z];
+
+                // Do NOT modify part rotations here
+                // Each part maintains its own local rotation
             }
         }
 
@@ -152,11 +161,11 @@ namespace PrimerFigura
         {
             Parte cubo = new Parte(-1.0f,-1.0f,0.0f);
             cubo.cargarCubo();
-            cubo.Rotation = [0.0f, 45.0f, 0.0f];
             this.añadirParte("Cubo1", cubo);
 
             Parte cubo1 = new Parte(0.0f,-1.0f,0.0f);
             cubo1.cargarCubo();
+            cubo1.Scale = 0.5f;
             this.añadirParte("Cubo2", cubo1);
 
             Parte cubo2 = new Parte(1.0f, -1.0f, 0.0f);
