@@ -85,33 +85,26 @@ namespace PrimerFigura
 
         public void dibujar(Shader shader)
         {
-            Matrix4 Rotation = Matrix4.CreateRotationX(MathHelper.DegreesToRadians(this._rotation.X)) *
-                                        Matrix4.CreateRotationY(MathHelper.DegreesToRadians(this._rotation.Y)) *
-                                        Matrix4.CreateRotationZ(MathHelper.DegreesToRadians(this._rotation.Z));
+            // Create transformation matrices based on escenario properties
+            Matrix4 escenarioRotation = Matrix4.CreateRotationX(MathHelper.DegreesToRadians(this._rotation.X)) *
+                                      Matrix4.CreateRotationY(MathHelper.DegreesToRadians(this._rotation.Y)) *
+                                      Matrix4.CreateRotationZ(MathHelper.DegreesToRadians(this._rotation.Z));
+
+            Matrix4 escenarioScale = Matrix4.CreateScale(this._scale);
+
+            // Combine transformations
+            Matrix4 escenarioTransform = escenarioScale * escenarioRotation;
 
             foreach (var objeto in Objetos)
             {
-                objeto.Value.dibujar(_posicion, Rotation, shader);
+                // Pass base position and transformation matrix
+                objeto.Value.dibujar(this._posicion, escenarioTransform, shader);
             }
         }
 
         public void Escalar(float multiplicador)
         {
-            this._scale *= multiplicador;  // Multiply instead of add
-            foreach (var objeto in Objetos)
-            {
-                // Keep original positions, apply new scale
-                Vector4 originalPos = new Vector4(
-                    objeto.Value.OffsetCoords[0],  // Remove previous scale
-                    objeto.Value.OffsetCoords[1],
-                    objeto.Value.OffsetCoords[2],
-                    1.0f
-                );
-
-                Vector4 newPos = originalPos * Matrix4.CreateScale(this._scale);  // Apply new scale
-                objeto.Value.OffsetCoords = [newPos.X, newPos.Y, newPos.Z];
-                objeto.Value.Escalar(this._scale);  
-            }
+            this._scale *= multiplicador;           
         }
 
         public void Rotar(float x, float y, float z)
@@ -119,23 +112,6 @@ namespace PrimerFigura
             this._rotation.X += x;
             this._rotation.Y += y;
             this._rotation.Z += z;
-
-            Matrix4 rotation = Matrix4.CreateRotationX(MathHelper.DegreesToRadians(x)) *
-                                Matrix4.CreateRotationY(MathHelper.DegreesToRadians(y)) *
-                                Matrix4.CreateRotationZ(MathHelper.DegreesToRadians(z));
-
-            foreach (var objeto in Objetos)
-            {
-                Vector4 originalPos = new Vector4(
-                    objeto.Value.OffsetCoords[0],
-                    objeto.Value.OffsetCoords[1],
-                    objeto.Value.OffsetCoords[2],
-                    1.0f
-                );
-
-                Vector4 newPos = originalPos * rotation;
-                objeto.Value.OffsetCoords = [newPos.X, newPos.Y, newPos.Z];
-            }
         }
 
         public void Trasladar(float x, float y, float z)
@@ -187,6 +163,10 @@ namespace PrimerFigura
             Objeto eje = new Objeto(new Vector3(0,0,0));
             eje.cargarAxis();
             this.Objetos.Add("Ejes", eje);
+
+            Objeto esfera = new Objeto(0, 1, 0);
+            esfera.CargarEsfera();
+            this.Objetos.Add("Esfera", esfera);
         }
     }
 }

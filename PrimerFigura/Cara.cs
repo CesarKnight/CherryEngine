@@ -114,12 +114,10 @@ namespace PrimerFigura
             inicializarBuffers();
         }
 
-        public void Dibujar(Vector3 pos, Matrix4 rotacion , float escala , Shader shader)
+        public void Dibujar(Vector3 pos, Matrix4 combinedTransform, float escala, Shader shader)
         {
             Matrix4 Translation = Matrix4.CreateTranslation(pos);
-
-            Matrix4 Scale = Matrix4.CreateScale(escala);
-            Matrix4 Transformation = Scale * rotacion * Translation;
+            Matrix4 Transformation = combinedTransform * Translation;
 
             int modelLocation = GL.GetUniformLocation(shader.Handle, "model");
             GL.UniformMatrix4(modelLocation, false, ref Transformation);
