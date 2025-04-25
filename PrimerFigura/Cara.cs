@@ -114,13 +114,13 @@ namespace PrimerFigura
             inicializarBuffers();
         }
 
-
-        public void Dibujar(Vector3 pos, Shader shader)
+        public void Dibujar(Vector3 pos, Matrix4 combinedTransform, float escala, Shader shader)
         {
+            Matrix4 Translation = Matrix4.CreateTranslation(pos);
+            Matrix4 Transformation = combinedTransform * Translation;
 
-            Matrix4 model = Matrix4.CreateTranslation(pos);
             int modelLocation = GL.GetUniformLocation(shader.Handle, "model");
-            GL.UniformMatrix4(modelLocation, false, ref model);
+            GL.UniformMatrix4(modelLocation, false, ref Transformation);
 
             GL.BindVertexArray(VertexArrayObject);
             GL.DrawElements(PrimitiveType.Triangles, this._indicesArray.Length, DrawElementsType.UnsignedInt, 0);

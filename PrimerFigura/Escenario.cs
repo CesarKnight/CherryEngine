@@ -13,9 +13,12 @@ namespace PrimerFigura
     class Escenario
     {
         private Vector3 _posicion;
+        private Vector3 _rotation;
+        private float _scale;
+        
+        [JsonPropertyOrder(4)]
         public Dictionary<string, Objeto> Objetos { get; set; }
 
-        [JsonPropertyOrder(-1)]
         public float[] Posicion
         {
             get {
@@ -26,9 +29,35 @@ namespace PrimerFigura
                 return posicionArray; 
             }
             set {
-                _posicion.X = value[0];
-                _posicion.Y = value[1];
-                _posicion.Z = value[2];
+                _posicion = new Vector3(0,0,0);
+                this.Trasladar(value[0], value[1], value[2]);
+            }
+        }
+
+        public float[] Rotation
+        {
+            get
+            {
+                float[] rotacionArray = new float[3];
+                rotacionArray[0] = this._rotation.X;
+                rotacionArray[1] = this._rotation.Y;
+                rotacionArray[2] = this._rotation.Z;
+                return rotacionArray;
+            }
+            set
+            {
+                _rotation = new Vector3(0, 0, 0);
+                this.Rotar(value[0], value[1], value[2]);
+            }
+        }
+
+        public float Scale
+        {
+            get { return this._scale; }
+            set
+            {
+                _scale = 0.0f;
+                this.Escalar(value);
             }
         }
 
@@ -41,22 +70,55 @@ namespace PrimerFigura
         public Escenario()
         {
             this._posicion = new Vector3(0.0f, 0.0f, 0.0f);
+            this._rotation = new Vector3(0.0f, 0.0f, 0.0f);
+            this._scale = 1.0f;
             this.Objetos = new Dictionary<string, Objeto>(); 
         }
-
-        public Escenario(Vector3 posicion)
+        public Escenario(float x, float y, float z):this()
+        {
+            this._posicion = new Vector3(x, y, z);
+        }
+        public Escenario(Vector3 posicion):this()
         {
             this._posicion = posicion;
-            this.Objetos = new Dictionary<string, Objeto>();
         }
-
 
         public void dibujar(Shader shader)
         {
+            // Create transformation matrices based on escenario properties
+            Matrix4 escenarioRotation = Matrix4.CreateRotationX(MathHelper.DegreesToRadians(this._rotation.X)) *
+                                      Matrix4.CreateRotationY(MathHelper.DegreesToRadians(this._rotation.Y)) *
+                                      Matrix4.CreateRotationZ(MathHelper.DegreesToRadians(this._rotation.Z));
+
+            Matrix4 escenarioScale = Matrix4.CreateScale(this._scale);
+
+            // Combine transformations
+            Matrix4 escenarioTransform = escenarioScale * escenarioRotation;
+
             foreach (var objeto in Objetos)
             {
-                objeto.Value.dibujar(_posicion, shader);
+                // Pass base position and transformation matrix
+                objeto.Value.dibujar(this._posicion, escenarioTransform, shader);
             }
+        }
+
+        public void Escalar(float multiplicador)
+        {
+            this._scale *= multiplicador;           
+        }
+
+        public void Rotar(float x, float y, float z)
+        {
+            this._rotation.X += x;
+            this._rotation.Y += y;
+            this._rotation.Z += z;
+        }
+
+        public void Trasladar(float x, float y, float z)
+        {
+            this._posicion.X += x;
+            this._posicion.Y += y;
+            this._posicion.Z += z;
         }
 
         public void GuardarEscenario(string nombreArchivo)
@@ -88,13 +150,23 @@ namespace PrimerFigura
 
         public void CargarEscenarioPrueba()
         {
-            Objeto cubitos = new Objeto(0.0f, 0.0f, 0.0f);
+            Objeto cubitos = new Objeto(0.0f, 0.0f, 3.0f);
             cubitos.cargarCubos();
-            this.Objetos.Add("Cubitos", cubitos);
+            cubitos.Scale = 2f;
+            cubitos.Rotar(45, 45, 30);
+            this.Objetos.Add("U", cubitos);
+
+            Objeto U2 = new Objeto(5.0f, 0.0f, 0.0f);
+            U2.cargarCubos();
+            this.Objetos.Add("U2", U2);
 
             Objeto eje = new Objeto(new Vector3(0,0,0));
             eje.cargarAxis();
             this.Objetos.Add("Ejes", eje);
+
+            Objeto esfera = new Objeto(0, 1, 0);
+            esfera.CargarEsfera();
+            this.Objetos.Add("Esfera", esfera);
         }
     }
 }

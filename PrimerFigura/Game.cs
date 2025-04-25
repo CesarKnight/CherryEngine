@@ -61,7 +61,11 @@ namespace PrimerFigura
             base.OnLoad();
             // Inicializamos el escenario en 0,0,0
             escenario0 = new Escenario(new Vector3(0, 0, 0));
-            escenario0.CargarEscenario("Escenario.json");
+            escenario0.CargarEscenarioPrueba();
+            escenario0.Escalar(0.1f);
+            escenario0.Rotar(0, 0, 0);
+            escenario0.Trasladar(0, 1, 0);
+
             // Color de fondo  
             GL.ClearColor(0.5f, 0.1f, 0.3f, 1.0f);
             GL.Enable(EnableCap.DepthTest);

@@ -14,8 +14,12 @@ namespace PrimerFigura
     {
         // Esta es posicion relativa al centro de masas de objeto
         private Vector3 _offsetCoords;
-        public List<Cara> Caras { get; set; }
+        private Vector3 _rotation;
+        public float _scale;
 
+        [JsonPropertyOrder(4)]
+        public List<Cara> Caras { get; set; }
+        
         public float[] OffsetCoords
         {
             get
@@ -28,40 +32,158 @@ namespace PrimerFigura
             }
             set
             {
-                _offsetCoords.X = value[0];
-                _offsetCoords.Y = value[1];
-                _offsetCoords.Z = value[2];
+                this._offsetCoords = new Vector3(0,0,0);
+                this.Trasladar(value[0], value[1], value[2]);
+            }
+        }
+        public float[] Rotation
+        {
+            get
+            {
+                float[] rotacionArray = new float[3];
+                rotacionArray[0] = this._rotation.X;
+                rotacionArray[1] = this._rotation.Y;
+                rotacionArray[2] = this._rotation.Z;
+                return rotacionArray;
+            }
+            set
+            {
+                this._rotation = new Vector3(0, 0, 0);
+                this.Rotar(value[0], value[1], value[2]);
+            }
+        }
+
+        public float Scale
+        {
+            get { return this._scale; }
+            set 
+            { 
+                this._scale = 1.0f;
+                this.Escalar(value);
             }
         }
 
         public Parte()
         {
             this._offsetCoords = new Vector3(0.0f, 0.0f, 0.0f);
+            this._rotation = new Vector3(0.0f, 0.0f, 0.0f);
+            this._scale = 1.0f;
             this.Caras = new List<Cara>();
         }
 
-        public Parte(float difX, float difY, float difZ)
+        public Parte(float difX, float difY, float difZ) : this()
         {
             this._offsetCoords = new Vector3(difX, difY, difZ);
-            this.Caras = [];
         }
 
-        public Parte(Vector3 offset)
+        public Parte(Vector3 offset) : this()
         {
             this._offsetCoords = offset;
-            this.Caras = [];
         }
 
-
-        public void dibujar(Vector3 posCentroObjeto, Shader shader)
+        public void dibujar(Vector3 posCentroObjeto, Matrix4 objetoTransform, Shader shader)
         {
-            foreach(Cara cara in this.Caras)
+            // Create local transformation matrices
+            Matrix4 parteRotation = Matrix4.CreateRotationX(MathHelper.DegreesToRadians(this._rotation.X)) *
+                                  Matrix4.CreateRotationY(MathHelper.DegreesToRadians(this._rotation.Y)) *
+                                  Matrix4.CreateRotationZ(MathHelper.DegreesToRadians(this._rotation.Z));
+
+            Matrix4 parteScale = Matrix4.CreateScale(this._scale);
+
+            // Calculate the transformed position of this part
+            Vector3 transformedPos = Vector3.TransformPosition(this._offsetCoords, objetoTransform);
+            Vector3 finalPos = posCentroObjeto + transformedPos;
+
+            // Combine transformations
+            Matrix4 finalTransform = parteScale * parteRotation * objetoTransform;
+
+            foreach (Cara cara in this.Caras)
             {
-                cara.Dibujar(posCentroObjeto + this._offsetCoords, shader);
+                cara.Dibujar(finalPos, finalTransform, this._scale, shader);
+            }
+        }
+
+        public void Escalar(float multiplicador)
+        {
+            this._scale *= multiplicador;
+        }
+
+        public void Rotar(float x, float y, float z)
+        {
+            this._rotation.X += x;
+            this._rotation.Y += y;
+            this._rotation.Z += z;
+        }
+
+        public void Trasladar(float x, float y, float z)
+        {
+            this._offsetCoords.X += x;
+            this._offsetCoords.Y += y;
+            this._offsetCoords.Z += z;
+        }
+
+        public void cargarEsfera(string colorHex, int latitudeBands = 10, int longitudeBands = 10)
+        {
+            // Clear any existing caras
+            this.Caras = new List<Cara>();
+
+            // Calculate vertices
+            List<VerticeColor> vertices = new List<VerticeColor>();
+            List<uint> indices = new List<uint>();
+
+            // Generate vertices for each point on the sphere
+            for (int lat = 0; lat <= latitudeBands; lat++)
+            {
+                float theta = lat * MathF.PI / latitudeBands;
+                float sinTheta = MathF.Sin(theta);
+                float cosTheta = MathF.Cos(theta);
+
+                for (int lon = 0; lon <= longitudeBands; lon++)
+                {
+                    float phi = lon * 2 * MathF.PI / longitudeBands;
+                    float sinPhi = MathF.Sin(phi);
+                    float cosPhi = MathF.Cos(phi);
+
+                    float x = cosPhi * sinTheta;
+                    float y = cosTheta;
+                    float z = sinPhi * sinTheta;
+
+                    // Add vertex with position (scaled to 0.5 radius to match cube dimensions)
+                    vertices.Add(new VerticeColor(x * 0.5f, y * 0.5f, z * 0.5f));
+                }
             }
 
-        }
+            // Generate indices for triangles
+            for (int lat = 0; lat < latitudeBands; lat++)
+            {
+                for (int lon = 0; lon < longitudeBands; lon++)
+                {
+                    uint first = (uint)(lat * (longitudeBands + 1) + lon);
+                    uint second = (uint)(first + longitudeBands + 1);
 
+                    // First triangle of the quad
+                    indices.Add(first);
+                    indices.Add(second);
+                    indices.Add(first + 1);
+
+                    // Second triangle of the quad
+                    indices.Add(second);
+                    indices.Add(second + 1);
+                    indices.Add(first + 1);
+                }
+            }
+
+            // Create a single cara for the sphere
+            Cara esfera = new Cara();
+            VerticeColor[] verticesArray = vertices.ToArray();
+            uint[] indicesArray = indices.ToArray();
+
+            // Set the color for the sphere
+            esfera.SetVerticesColor(verticesArray, indicesArray, colorHex);
+
+            // Add the cara to the parte
+            this.Caras.Add(esfera);
+        }
         public void cargarCubo()
         {
             uint[] indices=
@@ -141,7 +263,6 @@ namespace PrimerFigura
             ];
             this.Caras = carasCubo;
         }
-
         public void cargarCrossAxis()
         {
             uint[] indices =
