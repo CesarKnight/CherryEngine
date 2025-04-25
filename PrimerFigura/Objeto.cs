@@ -119,27 +119,21 @@ namespace PrimerFigura
             this._rotation.Y += y;
             this._rotation.Z += z;
 
-            // Create quaternion from local rotation only
-            Quaternion rotation = Quaternion.FromEulerAngles(
-                MathHelper.DegreesToRadians(x),
-                MathHelper.DegreesToRadians(y),
-                MathHelper.DegreesToRadians(z)
-            );
+            Matrix4 rotation = Matrix4.CreateRotationX(MathHelper.DegreesToRadians(x)) *
+                               Matrix4.CreateRotationY(MathHelper.DegreesToRadians(y)) *
+                               Matrix4.CreateRotationZ(MathHelper.DegreesToRadians(z));
 
             foreach (var parte in PartesLista)
             {
-                // Transform positions using the delta rotation
-                Vector3 originalPos = new Vector3(
+                Vector4 originalPos = new Vector4(
                     parte.Value.OffsetCoords[0],
                     parte.Value.OffsetCoords[1],
-                    parte.Value.OffsetCoords[2]
+                    parte.Value.OffsetCoords[2],
+                    1.0f
                 );
 
-                Vector3 newPos = Vector3.Transform(originalPos, rotation);
+                Vector4 newPos = originalPos * rotation;
                 parte.Value.OffsetCoords = [newPos.X, newPos.Y, newPos.Z];
-
-                // Do NOT modify part rotations here
-                // Each part maintains its own local rotation
             }
         }
 
