@@ -127,22 +127,34 @@ namespace PrimerFigura
             File.WriteAllText(nombreArchivo, jsonString);
         }
 
-        public void CargarEscenario(string nombreArchivo)
+        public bool CargarEscenario(string nombreArchivo)
         {
+            if (!File.Exists(nombreArchivo))
+            {
+                System.Console.WriteLine("El archivo no existe.");
+                return false;
+            }
             string jsonString = File.ReadAllText(nombreArchivo);
             if (string.IsNullOrEmpty(jsonString))
-                throw new Exception("El archivo está vacío o no existe.");
-
+            {
+                System.Console.WriteLine("El archivo está vacío.");
+                return false;
+            }
             var EscenarioCargado = JsonSerializer.Deserialize<Escenario>(jsonString, options);
             if(EscenarioCargado == null)
-                throw new Exception("Error al deserializar el archivo.");
-
+            {
+                System.Console.WriteLine("Error al deserializar el archivo.");
+                return false;
+            }
+            
             this._posicion = new Vector3(
                 EscenarioCargado.Posicion[0],
                 EscenarioCargado.Posicion[1],
                 EscenarioCargado.Posicion[2]
             );
+            
             this.Objetos = EscenarioCargado.Objetos;
+            return true;
         }
 
         public void CargarEscenarioPrueba()

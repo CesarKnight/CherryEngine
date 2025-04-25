@@ -61,7 +61,9 @@ namespace PrimerFigura
             base.OnLoad();
             WindowState = WindowState.Maximized;
 
-            escenario.CargarEscenario("Escenario.json");
+            bool carga = escenario.CargarEscenario("Escenario.json");
+            if ( !carga )
+                escenario.CargarEscenarioPrueba();
 
             GL.ClearColor(0.5f, 0.1f, 0.3f, 1.0f);
             GL.Enable(EnableCap.DepthTest);
