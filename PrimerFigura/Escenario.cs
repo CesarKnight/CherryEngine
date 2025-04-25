@@ -124,15 +124,12 @@ namespace PrimerFigura
         public void GuardarEscenario(string nombreArchivo)
         {
             string jsonString = JsonSerializer.Serialize(this, options);
-
-            System.Console.WriteLine("Archivo guardado: \n" + jsonString);
             File.WriteAllText(nombreArchivo, jsonString);
         }
 
         public void CargarEscenario(string nombreArchivo)
         {
             string jsonString = File.ReadAllText(nombreArchivo);
-            System.Console.WriteLine("leyendo archivo: \n" + jsonString);
             if (string.IsNullOrEmpty(jsonString))
                 throw new Exception("El archivo está vacío o no existe.");
 

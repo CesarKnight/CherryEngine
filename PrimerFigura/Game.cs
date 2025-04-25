@@ -19,11 +19,11 @@ namespace PrimerFigura
     internal class Game : GameWindow
     {
         private Camera camera;
+        private Editor editor;
         private Vector2 lastMousePosition;
-        // el objeto shader  
-        Shader? shader;
-        // Escenario  
-        Escenario? escenario0;
+        private Shader? shader;
+
+        public Escenario escenario = new Escenario();
 
         public Game(int ancho, int alto, string titulo)
              : base
@@ -33,7 +33,6 @@ namespace PrimerFigura
                      ClientSize = (ancho, alto),
                      Title = titulo,
                      WindowState = WindowState.Normal,
-                     //Location = new Vector2i(500, 310),  
                  }
              )
         {
@@ -42,6 +41,7 @@ namespace PrimerFigura
                 new Vector3(0.0f, 0.0f, 0.0f),
                 Vector3.UnitY
             );
+            editor = new Editor(camera,this);
         }
 
         protected override void OnFramebufferResize(FramebufferResizeEventArgs e)
@@ -59,20 +59,15 @@ namespace PrimerFigura
         protected override void OnLoad()
         {
             base.OnLoad();
-            // Inicializamos el escenario en 0,0,0
-            escenario0 = new Escenario(new Vector3(0, 0, 0));
-            escenario0.CargarEscenarioPrueba();
-            escenario0.Escalar(0.1f);
-            escenario0.Rotar(0, 0, 0);
-            escenario0.Trasladar(0, 1, 0);
+            WindowState = WindowState.Maximized;
 
-            // Color de fondo  
+            escenario.CargarEscenario("Escenario.json");
+
             GL.ClearColor(0.5f, 0.1f, 0.3f, 1.0f);
             GL.Enable(EnableCap.DepthTest);
             
             CursorState = CursorState.Grabbed;
-            
-            // compilamos el shader
+
             string baseDir = AppDomain.CurrentDomain.BaseDirectory;
             string shaderDir = Path.GetFullPath(Path.Combine(baseDir, @"..\..\..\Shaders"));
             string vertexPath = Path.Combine(shaderDir, "shader.vert");
@@ -85,17 +80,7 @@ namespace PrimerFigura
         {
             base.OnUpdateFrame(args);
 
-            if (KeyboardState.IsKeyDown(Keys.Escape))
-                Close();
-            if (KeyboardState.IsKeyDown(Keys.Tab))
-                CursorState = CursorState == CursorState.Normal ? CursorState.Grabbed : CursorState.Normal;
-            if (KeyboardState.IsKeyDown(Keys.G))
-            {
-                if(escenario0 != null) 
-                    escenario0.GuardarEscenario("Escenario.json");
-            }
-
-            camera.ProcessKeyboardInput(KeyboardState, (float)args.Time);
+            editor.ProcessKeyboardInput(KeyboardState, (float)args.Time);
 
             var mouseState = MouseState;
             var deltaX = mouseState.X - lastMousePosition.X;
@@ -126,12 +111,34 @@ namespace PrimerFigura
                 GL.UniformMatrix4(projectionLocation, false, ref projection);
             }
 
-            if (escenario0 != null && shader != null)
+            if (escenario != null && shader != null)
             {
-                escenario0.dibujar(shader);
+                escenario.dibujar(shader);
             }
 
             SwapBuffers();
+        }
+
+        // llamada a la api de GLFW para obtener el tamaño de la pantalla
+        // GLFW es la libreria que OpenTK usa para crear la ventana
+        protected void VerGLFW()
+        {
+            unsafe
+            {
+                var glfwWindow = GLFW.GetCurrentContext();
+                if (glfwWindow == null)
+                {
+                    Console.WriteLine("No current GLFW context.");
+                }
+                else
+                {
+                    var monitorPrimario = GLFW.GetPrimaryMonitor();
+                    var videoMode = GLFW.GetVideoMode(monitorPrimario);
+                    int screenWidth = videoMode->Width;
+                    int screenHeight = videoMode->Height;
+                    Console.WriteLine($"Screen Width: {screenWidth}, Screen Height: {screenHeight}");
+                }
+            }
         }
     }
 }

@@ -35,24 +35,6 @@ namespace PrimerFigura
             return Matrix4.LookAt(Position, Position + Front, Up);
         }
 
-        public void ProcessKeyboardInput(KeyboardState keyboardState, float deltaTime)
-        {
-            float velocity = Speed * deltaTime;
-            if (keyboardState.IsKeyDown(Keys.W))
-                Position += Front * velocity;
-            if (keyboardState.IsKeyDown(Keys.S))
-                Position -= Front * velocity;
-            if (keyboardState.IsKeyDown(Keys.A))
-                Position -= Vector3.Normalize(Vector3.Cross(Front, Up)) * velocity;
-            if (keyboardState.IsKeyDown(Keys.D))
-                Position += Vector3.Normalize(Vector3.Cross(Front, Up)) * velocity;
-            if (keyboardState.IsKeyDown(Keys.LeftControl))
-                Position -= Up * velocity;
-            if (keyboardState.IsKeyDown(Keys.Space))
-                Position += Up * velocity;
-            
-            
-        }
 
         public void ProcessMouseMovement(float xOffset, float yOffset)
         {
