@@ -20,12 +20,14 @@ namespace PrimerFigura
         public string SelectedParte { get; set; } = "";
         private bool EditModeActive = false; 
 
-        private float rotationSpeed = 0.003f;
-        private float traslationSpeed = 0.0001f;
-        private float scaleSpeed = 0.0001f;
+        private float rotationSpeed = 0.1f;
+        private float traslationSpeed = 0.01f;
+        private float scaleSpeed = 0.001f;
 
         private const float KeyDelay = 0.3f; // Delay in seconds
         private float KeyCooldown = 0.0f;
+
+        public string EscenarioFileName { get; set; } = "EScenario.json";
         
         public enum TransformationEditMode
         {
@@ -57,6 +59,23 @@ namespace PrimerFigura
                 KeyCooldown = KeyDelay;
             }
 
+            if (keyboardState.IsKeyDown(Keys.G) && KeyCooldown <= 0)
+            {
+                System.Console.WriteLine("guardando escenario");
+                Game.escenario.GuardarEscenario(EscenarioFileName);
+
+                KeyCooldown = KeyDelay;
+            }
+
+            if (keyboardState.IsKeyDown(Keys.H) && KeyCooldown <= 0)
+            {
+                System.Console.WriteLine("cargando escenario");
+                Game.escenario.CargarEscenario(EscenarioFileName);
+                Escenario = Game.escenario;
+
+                KeyCooldown = KeyDelay;
+            }
+
             if (EditModeActive)
             {
                 EditModeInputs(keyboardState, deltaTime);
@@ -68,23 +87,6 @@ namespace PrimerFigura
 
         public void EditModeInputs(KeyboardState keyboardState, float deltaTime)
         {
-            if (keyboardState.IsKeyDown(Keys.G) && KeyCooldown <= 0)
-            {
-                System.Console.WriteLine("guardando escenario");
-                Escenario?.GuardarEscenario("Escenario.json");
-                
-                KeyCooldown = KeyDelay;
-            }
-
-            if (keyboardState.IsKeyDown(Keys.H) && KeyCooldown <= 0)
-            {
-                System.Console.WriteLine("cargando escenario");
-                Escenario?.CargarEscenario("Escenario.json");
-
-                KeyCooldown = KeyDelay;
-            }
-
-
             if (SelectedObjeto == "" && SelectedParte == "")
             {
                 EscenarioTransformations(keyboardState, deltaTime);

@@ -45,22 +45,23 @@ internal class Program
         {
             case "ayuda":
                 Console.WriteLine("Comandos disponibles: ");
-                Console.WriteLine("  guardar - guardar escena actual ");
-                Console.WriteLine("  cargar - cargar una escena guardada");
                 Console.WriteLine("  editar - editar los elementos de la escena");
+                Console.WriteLine("  controles - ver las teclas usadas para el motor grafico");
+                Console.WriteLine("  archivo - Selecciona el archivo donde el escenario se cargara y guardara");
+                Console.WriteLine("  cargar - cargar una escena guardada");
                 Console.WriteLine("  exit - Close the application");
                 break;
 
-            case "guardar":
-                ComandoGuardar();
-                break;
-
-            case "cargar":
-                ComandoCargar();
+            case "archivo":
+                ComandoArchivoDireccion();
                 break;
 
             case "editar":
                 ComandoEditar();
+                break;
+
+            case "controles":
+                ComandoControles();
                 break;
 
             case "salir":
@@ -83,6 +84,7 @@ internal class Program
             if(command == "salir")
             {
                 Console.WriteLine("Saliendo de edición");
+                jueguito!.editor.currentTransformationMode = null;
                 break;
             }
             ProcesoEditarEscenario(command);
@@ -113,13 +115,22 @@ internal class Program
                 Console.WriteLine("Rotando escenario...");
                 jueguito!.editor.currentTransformationMode = Editor.TransformationEditMode.Rotacion;
                 break;
-            case "mover":
+            case "trasladar":
                 Console.WriteLine("Moviendo escenario...");
                 jueguito!.editor.currentTransformationMode = Editor.TransformationEditMode.Traslacion;
                 break;
             case "escalar":
                 Console.WriteLine("Escalando escenario...");
                 jueguito!.editor.currentTransformationMode = Editor.TransformationEditMode.Escalado;
+                break;
+            case "ayuda":
+                Console.WriteLine("Comandos disponibles: ");
+                Console.WriteLine("  objetos - Listar los objetos de la escena");
+                Console.WriteLine("  seleccionar - seleccionar un objeto para editar");
+                Console.WriteLine("  rotar - rotar la escena ");
+                Console.WriteLine("  trasladar - trasladar la escena");
+                Console.WriteLine("  escalar - escalar la escena");
+                Console.WriteLine("  salir - salir de edicion de escenario");
                 break;
             default:
                 Console.WriteLine($"Comando no reconocido: {command}");
@@ -144,6 +155,7 @@ internal class Program
             if (command == "salir")
             {
                 jueguito!.editor.SelectedObjeto = "";
+                jueguito!.editor.currentTransformationMode = null;
                 Console.WriteLine($"Saliendo de la edición del objeto: {NombreObjeto}");
                 break;
             }
@@ -175,13 +187,22 @@ internal class Program
                 Console.WriteLine("Rotando objeto...");
                 jueguito!.editor.currentTransformationMode = Editor.TransformationEditMode.Rotacion;
                 break;
-            case "mover":
+            case "trasladar":
                 Console.WriteLine("Moviendo objeto...");
                 jueguito!.editor.currentTransformationMode = Editor.TransformationEditMode.Traslacion;
                 break;
             case "escalar":
                 Console.WriteLine("Escalando objeto...");
                 jueguito!.editor.currentTransformationMode = Editor.TransformationEditMode.Escalado;
+                break;
+            case "ayuda":
+                Console.WriteLine("Comandos disponibles: ");
+                Console.WriteLine("  partes - Listar las partes del objeto");
+                Console.WriteLine("  seleccionar - seleccionar un parte para editar");
+                Console.WriteLine("  rotar - rotar el objeto");
+                Console.WriteLine("  trasladar - trasladar el objeto");
+                Console.WriteLine("  escalar - escalar el objeto");
+                Console.WriteLine("  salir - salir de edicion de escenario");
                 break;
             default:
                 Console.WriteLine($"Comando no reconocido: {command}");
@@ -207,6 +228,7 @@ internal class Program
             if (command == "salir")
             {
                 jueguito!.editor.SelectedParte = "";
+                jueguito!.editor.currentTransformationMode = null;
                 Console.WriteLine($"Saliendo de la edición del Parte: {NombreParte}");
                 break;
             }
@@ -222,7 +244,7 @@ internal class Program
                 Console.WriteLine("Rotando Parte...");
                 jueguito!.editor.currentTransformationMode = Editor.TransformationEditMode.Rotacion;
                 break;
-            case "mover":
+            case "trasladar":
                 Console.WriteLine("Moviendo Parte...");
                 jueguito!.editor.currentTransformationMode = Editor.TransformationEditMode.Traslacion;
                 break;
@@ -230,34 +252,57 @@ internal class Program
                 Console.WriteLine("Escalando Parte...");
                 jueguito!.editor.currentTransformationMode = Editor.TransformationEditMode.Escalado;
                 break;
+            case "ayuda":
+                Console.WriteLine("Comandos disponibles: ");
+                Console.WriteLine("  rotar - rotar la parte");
+                Console.WriteLine("  trasladar - trasladar la parte");
+                Console.WriteLine("  escalar - escalar la parte");
+                Console.WriteLine("  salir - salir de edicion de escenario");
+                break;
             default:
                 Console.WriteLine($"Comando no reconocido: {command}");
                 break;
         }
     }
 
-    public static void ComandoCargar()
+    public static void ComandoArchivoDireccion()
     {
-        //Console.WriteLine("Introduzca el nombre del archivo");
-        //string? fileName = Console.ReadLine();
-        //if (fileName != null)
-        //{
-        //    System.Console.WriteLine($"Cargando escenario desde {fileName}");
-        //    jueguito?.escenario.CargarEscenario(fileName);
-        //}   
-
-        jueguito!.escenario!.CargarEscenario("Escenario.json");
+        Console.WriteLine("Introduzca el nombre del archivo");
+        string? fileName = Console.ReadLine();
+        if (fileName != null)
+        {
+            System.Console.WriteLine($"Seleccionando escenario desde {fileName}");
+            jueguito!.editor.EscenarioFileName = fileName;
+        }
     }
 
-    public static void ComandoGuardar()
+
+    public static void ComandoControles()
     {
-        //Console.WriteLine("Introduzca el nombre del archivo");
-        //string? fileName = Console.ReadLine();
-        //if (fileName != null)
-        //{
-        //    System.Console.WriteLine($"Guardando escenario en {fileName}");
-        //    jueguito?.escenario.GuardarEscenario(fileName);
-        //}
-        jueguito!.escenario.GuardarEscenario("Escenario.json");
+        System.Console.Clear();
+        string controles = """
+            ------------Controles dentro del juego-------------
+            W - Mover en el eje  Z (adelante)
+            S - Mover en el eje -Z (atras)
+            A - Mover en el eje  X (derecha)
+            D - Mover en el eje -X (izquierda)
+            ESPACIO - Mover en el eje  Y (arriba)
+            CTRL - Mover en el eje -Y (abajo)
+            TAB - Cambiar entre modo tranformacion y camara
+
+            G - Guardar en el archivo seleccionado
+            H - Cargar del archivo seleccionado
+            
+            -------------modo transformacion-----------------
+            Se sigue usando las mismas teclas para transformar los ejes respectivos
+            Usa la consola para cambiar de elemento o de modo de transformacion (trasladar, rotar, escalar)
+
+
+            Presiona cualquier tecla para continuar...
+        """;
+        System.Console.WriteLine(controles);
+        System.Console.ReadLine();
+        System.Console.Clear();
+        Console.WriteLine("Consola de Juego inicializada correctamente. Escribe 'ayuda' para ver comandos");
     }
 }

@@ -23,7 +23,7 @@ namespace PrimerFigura
         public  Vector2 lastMousePosition;
         private Shader? shader;
 
-        public Escenario escenario = new Escenario();
+        public Escenario escenario;
 
         private bool ignorarPosicionInicialMouse = true;
 
@@ -44,6 +44,7 @@ namespace PrimerFigura
                 Vector3.UnitY
             );
             editor = new Editor(camera,this);
+            escenario = new Escenario(0, 0, 0);
         }
 
         protected override void OnFramebufferResize(FramebufferResizeEventArgs e)
@@ -67,6 +68,7 @@ namespace PrimerFigura
             //bool carga = escenario!.CargarEscenario("Escenario.json");
             //if (!carga)
             //    escenario.CargarEscenarioPrueba();
+
 
             GL.ClearColor(0.5f, 0.1f, 0.3f, 1.0f);
             GL.Enable(EnableCap.DepthTest);
@@ -152,6 +154,11 @@ namespace PrimerFigura
                     Console.WriteLine($"Screen Width: {screenWidth}, Screen Height: {screenHeight}");
                 }
             }
+        }
+
+        public void CargarEscenario(string filename)
+        {
+            escenario.CargarEscenario(filename);
         }
     }
 }

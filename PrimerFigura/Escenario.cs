@@ -85,19 +85,16 @@ namespace PrimerFigura
 
         public void dibujar(Shader shader)
         {
-            // Create transformation matrices based on escenario properties
             Matrix4 escenarioRotation = Matrix4.CreateRotationX(MathHelper.DegreesToRadians(this._rotation.X)) *
                                       Matrix4.CreateRotationY(MathHelper.DegreesToRadians(this._rotation.Y)) *
                                       Matrix4.CreateRotationZ(MathHelper.DegreesToRadians(this._rotation.Z));
 
             Matrix4 escenarioScale = Matrix4.CreateScale(this._scale);
 
-            // Combine transformations
             Matrix4 escenarioTransform = escenarioScale * escenarioRotation;
 
             foreach (var objeto in Objetos)
             {
-                // Pass base position and transformation matrix
                 objeto.Value.dibujar(this._posicion, escenarioTransform, shader);
             }
         }
