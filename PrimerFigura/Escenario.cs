@@ -56,7 +56,7 @@ namespace PrimerFigura
             get { return this._scale; }
             set
             {
-                _scale = 0.0f;
+                _scale = 1.0f;
                 this.Escalar(value);
             }
         }
@@ -124,28 +124,43 @@ namespace PrimerFigura
         public void GuardarEscenario(string nombreArchivo)
         {
             string jsonString = JsonSerializer.Serialize(this, options);
-
-            System.Console.WriteLine("Archivo guardado: \n" + jsonString);
             File.WriteAllText(nombreArchivo, jsonString);
         }
 
-        public void CargarEscenario(string nombreArchivo)
+        public bool CargarEscenario(string nombreArchivo)
         {
+            if (!File.Exists(nombreArchivo))
+            {
+                System.Console.WriteLine("El archivo no existe.");
+                return false;
+            }
             string jsonString = File.ReadAllText(nombreArchivo);
-            System.Console.WriteLine("leyendo archivo: \n" + jsonString);
             if (string.IsNullOrEmpty(jsonString))
-                throw new Exception("El archivo está vacío o no existe.");
-
+            {
+                System.Console.WriteLine("El archivo está vacío.");
+                return false;
+            }
             var EscenarioCargado = JsonSerializer.Deserialize<Escenario>(jsonString, options);
             if(EscenarioCargado == null)
-                throw new Exception("Error al deserializar el archivo.");
-
+            {
+                System.Console.WriteLine("Error al deserializar el archivo.");
+                return false;
+            }
+            
             this._posicion = new Vector3(
                 EscenarioCargado.Posicion[0],
                 EscenarioCargado.Posicion[1],
                 EscenarioCargado.Posicion[2]
             );
+            this._rotation = new Vector3(
+                EscenarioCargado.Rotation[0],
+                EscenarioCargado.Rotation[1],
+                EscenarioCargado.Rotation[2]
+            );
+            this._scale = EscenarioCargado.Scale;
+
             this.Objetos = EscenarioCargado.Objetos;
+            return true;
         }
 
         public void CargarEscenarioPrueba()

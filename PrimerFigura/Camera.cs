@@ -18,6 +18,8 @@ namespace PrimerFigura
         public float Yaw { get; set; }
         public float Speed { get; set; }
         public float Sensitivity { get; set; }
+        public bool ActiveMouseMovement = true;
+        public bool ActiveKeyboardMovement = true;
 
         public Camera(Vector3 position, Vector3 front, Vector3 up)
         {
@@ -33,25 +35,6 @@ namespace PrimerFigura
         public Matrix4 GetViewMatrix()
         {
             return Matrix4.LookAt(Position, Position + Front, Up);
-        }
-
-        public void ProcessKeyboardInput(KeyboardState keyboardState, float deltaTime)
-        {
-            float velocity = Speed * deltaTime;
-            if (keyboardState.IsKeyDown(Keys.W))
-                Position += Front * velocity;
-            if (keyboardState.IsKeyDown(Keys.S))
-                Position -= Front * velocity;
-            if (keyboardState.IsKeyDown(Keys.A))
-                Position -= Vector3.Normalize(Vector3.Cross(Front, Up)) * velocity;
-            if (keyboardState.IsKeyDown(Keys.D))
-                Position += Vector3.Normalize(Vector3.Cross(Front, Up)) * velocity;
-            if (keyboardState.IsKeyDown(Keys.LeftControl))
-                Position -= Up * velocity;
-            if (keyboardState.IsKeyDown(Keys.Space))
-                Position += Up * velocity;
-            
-            
         }
 
         public void ProcessMouseMovement(float xOffset, float yOffset)
