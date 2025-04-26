@@ -56,7 +56,7 @@ namespace PrimerFigura
             get { return this._scale; }
             set
             {
-                _scale = 0.0f;
+                _scale = 1.0f;
                 this.Escalar(value);
             }
         }
@@ -152,7 +152,13 @@ namespace PrimerFigura
                 EscenarioCargado.Posicion[1],
                 EscenarioCargado.Posicion[2]
             );
-            
+            this._rotation = new Vector3(
+                EscenarioCargado.Rotation[0],
+                EscenarioCargado.Rotation[1],
+                EscenarioCargado.Rotation[2]
+            );
+            this._scale = EscenarioCargado.Scale;
+
             this.Objetos = EscenarioCargado.Objetos;
             return true;
         }

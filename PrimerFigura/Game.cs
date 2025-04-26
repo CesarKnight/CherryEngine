@@ -19,11 +19,13 @@ namespace PrimerFigura
     internal class Game : GameWindow
     {
         private Camera camera;
-        private Editor editor;
-        private Vector2 lastMousePosition;
+        public Editor editor;
+        public  Vector2 lastMousePosition;
         private Shader? shader;
 
         public Escenario escenario = new Escenario();
+
+        private bool ignorarPosicionInicialMouse = true;
 
         public Game(int ancho, int alto, string titulo)
              : base
@@ -37,8 +39,8 @@ namespace PrimerFigura
              )
         {
             camera = new Camera(
-                new Vector3(0.0f, 0.0f, -2.0f),
-                new Vector3(0.0f, 0.0f, 0.0f),
+                new Vector3(0.0f, 0.0f, 10.0f),
+                new Vector3(0.0f, 0.0f, -1.0f),
                 Vector3.UnitY
             );
             editor = new Editor(camera,this);
@@ -59,16 +61,15 @@ namespace PrimerFigura
         protected override void OnLoad()
         {
             base.OnLoad();
-            WindowState = WindowState.Maximized;
+            this.WindowState = WindowState.Maximized;
+            CursorState = CursorState.Grabbed;
 
-            bool carga = escenario.CargarEscenario("Escenario.json");
-            if ( !carga )
-                escenario.CargarEscenarioPrueba();
+            //bool carga = escenario!.CargarEscenario("Escenario.json");
+            //if (!carga)
+            //    escenario.CargarEscenarioPrueba();
 
             GL.ClearColor(0.5f, 0.1f, 0.3f, 1.0f);
             GL.Enable(EnableCap.DepthTest);
-            
-            CursorState = CursorState.Grabbed;
 
             string baseDir = AppDomain.CurrentDomain.BaseDirectory;
             string shaderDir = Path.GetFullPath(Path.Combine(baseDir, @"..\..\..\Shaders"));
@@ -81,14 +82,24 @@ namespace PrimerFigura
         protected override void OnUpdateFrame(FrameEventArgs args)
         {
             base.OnUpdateFrame(args);
-
+                
             editor.ProcessKeyboardInput(KeyboardState, (float)args.Time);
+            if (editor.IsEditModeActive())
+                return;
 
-            var mouseState = MouseState;
+            MouseState mouseState = MouseState;
+
+            if (ignorarPosicionInicialMouse)
+            {
+                lastMousePosition = new Vector2(mouseState.X, mouseState.Y);
+                ignorarPosicionInicialMouse = false;
+                return;
+            }
+
             var deltaX = mouseState.X - lastMousePosition.X;
             var deltaY = mouseState.Y - lastMousePosition.Y;
-
             lastMousePosition = new Vector2(mouseState.X, mouseState.Y);
+            
             camera.ProcessMouseMovement(deltaX, deltaY);
         }
 

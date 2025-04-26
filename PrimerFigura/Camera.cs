@@ -18,6 +18,8 @@ namespace PrimerFigura
         public float Yaw { get; set; }
         public float Speed { get; set; }
         public float Sensitivity { get; set; }
+        public bool ActiveMouseMovement = true;
+        public bool ActiveKeyboardMovement = true;
 
         public Camera(Vector3 position, Vector3 front, Vector3 up)
         {
@@ -34,7 +36,6 @@ namespace PrimerFigura
         {
             return Matrix4.LookAt(Position, Position + Front, Up);
         }
-
 
         public void ProcessMouseMovement(float xOffset, float yOffset)
         {
