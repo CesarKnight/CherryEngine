@@ -47,9 +47,9 @@ internal class Program
                 Console.WriteLine("Comandos disponibles: ");
                 Console.WriteLine("  editar - editar los elementos de la escena");
                 Console.WriteLine("  controles - ver las teclas usadas para el motor grafico");
-                Console.WriteLine("  archivo - Selecciona el archivo donde el escenario se cargara y guardara");
+                Console.WriteLine("  archivo - Selecciona el archivo donde el escenario se cargara y guardara, Usa los de la carpeta Escenarios porfa");
                 Console.WriteLine("  cargar - cargar una escena guardada");
-                Console.WriteLine("  exit - Close the application");
+                Console.WriteLine("  salir - Close the application");
                 break;
 
             case "archivo":

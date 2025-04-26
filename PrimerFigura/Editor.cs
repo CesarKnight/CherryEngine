@@ -27,7 +27,7 @@ namespace PrimerFigura
         private const float KeyDelay = 0.3f; // Delay in seconds
         private float KeyCooldown = 0.0f;
 
-        public string EscenarioFileName { get; set; } = "EScenario.json";
+        public string EscenarioFileName { get; set; } = "Escenario.json";
         
         public enum TransformationEditMode
         {
@@ -62,7 +62,7 @@ namespace PrimerFigura
             if (keyboardState.IsKeyDown(Keys.G) && KeyCooldown <= 0)
             {
                 System.Console.WriteLine("guardando escenario");
-                Game.escenario.GuardarEscenario(EscenarioFileName);
+                Game.escenario.GuardarEscenario(EscenarioFileName, Game.ProductionMode);
 
                 KeyCooldown = KeyDelay;
             }
@@ -70,7 +70,7 @@ namespace PrimerFigura
             if (keyboardState.IsKeyDown(Keys.H) && KeyCooldown <= 0)
             {
                 System.Console.WriteLine("cargando escenario");
-                Game.escenario.CargarEscenario(EscenarioFileName);
+                Game.escenario.CargarEscenario(EscenarioFileName, Game.ProductionMode);
                 Escenario = Game.escenario;
 
                 KeyCooldown = KeyDelay;

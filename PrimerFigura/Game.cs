@@ -24,6 +24,7 @@ namespace PrimerFigura
         private Shader? shader;
 
         public Escenario escenario;
+        public bool ProductionMode = false;
 
         private bool ignorarPosicionInicialMouse = true;
 
@@ -64,11 +65,6 @@ namespace PrimerFigura
             base.OnLoad();
             this.WindowState = WindowState.Maximized;
             CursorState = CursorState.Grabbed;
-
-            //bool carga = escenario!.CargarEscenario("Escenario.json");
-            //if (!carga)
-            //    escenario.CargarEscenarioPrueba();
-
 
             GL.ClearColor(0.5f, 0.1f, 0.3f, 1.0f);
             GL.Enable(EnableCap.DepthTest);
@@ -154,11 +150,6 @@ namespace PrimerFigura
                     Console.WriteLine($"Screen Width: {screenWidth}, Screen Height: {screenHeight}");
                 }
             }
-        }
-
-        public void CargarEscenario(string filename)
-        {
-            escenario.CargarEscenario(filename);
         }
     }
 }

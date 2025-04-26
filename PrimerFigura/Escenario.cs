@@ -118,26 +118,43 @@ namespace PrimerFigura
             this._posicion.Z += z;
         }
 
-        public void GuardarEscenario(string nombreArchivo)
+        public void GuardarEscenario(string filePath, bool inProduction)
         {
             string jsonString = JsonSerializer.Serialize(this, options);
-            File.WriteAllText(nombreArchivo, jsonString);
+            
+            if (!inProduction)
+            {
+                string baseDir = AppDomain.CurrentDomain.BaseDirectory;
+                string shaderDir = Path.GetFullPath(Path.Combine(baseDir, @"..\..\..\Escenarios"));
+                filePath = Path.Combine(shaderDir, filePath);
+            }
+
+            File.WriteAllText(filePath, jsonString);
         }
 
-        public bool CargarEscenario(string nombreArchivo)
+        public bool CargarEscenario(string filePath, bool inProduction)
         {
-            if (!File.Exists(nombreArchivo))
+            if (! inProduction)
+            {
+                string baseDir = AppDomain.CurrentDomain.BaseDirectory;
+                string shaderDir = Path.GetFullPath(Path.Combine(baseDir, @"..\..\..\Escenarios"));
+                filePath = Path.Combine(shaderDir, filePath);
+            }
+
+            if (!File.Exists(filePath))
             {
                 System.Console.WriteLine("El archivo no existe.");
                 return false;
             }
-            string jsonString = File.ReadAllText(nombreArchivo);
+            string jsonString = File.ReadAllText(filePath);
+
             if (string.IsNullOrEmpty(jsonString))
             {
                 System.Console.WriteLine("El archivo está vacío.");
                 return false;
             }
             var EscenarioCargado = JsonSerializer.Deserialize<Escenario>(jsonString, options);
+
             if(EscenarioCargado == null)
             {
                 System.Console.WriteLine("Error al deserializar el archivo.");
