@@ -8,7 +8,7 @@ using System.Text.Json.Serialization;
 
 using OpenTK.Mathematics;
 
-namespace PrimerFigura
+namespace CherryEngine
 {
     class Escenario
     {

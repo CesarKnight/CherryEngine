@@ -7,7 +7,7 @@ using OpenTK.Mathematics;
 using OpenTK.Windowing.Common;
 using OpenTK.Windowing.GraphicsLibraryFramework;
 
-namespace PrimerFigura
+namespace CherryEngine
 {
     public class Camera
     {

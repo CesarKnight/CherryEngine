@@ -8,7 +8,7 @@ using OpenTK.Windowing.GraphicsLibraryFramework;
 using OpenTK.Mathematics;
 using OpenTK.Windowing.Common;
 
-namespace PrimerFigura
+namespace CherryEngine
 {
     class Editor
     {

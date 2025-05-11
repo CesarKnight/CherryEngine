@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 using OpenTK.Graphics.OpenGL4;
 
-namespace PrimerFigura
+namespace CherryEngine
 {
     class Shader
     {

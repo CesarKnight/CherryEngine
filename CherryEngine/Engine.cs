@@ -1,8 +1,8 @@
 ﻿using OpenTK.Windowing.GraphicsLibraryFramework;
-using PrimerFigura;
+using CherryEngine;
 using System.Threading;
 
-internal class Program
+internal class Engine
 {
     private static Game? jueguito;
     private static bool isRunning = true;

@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
 
-namespace PrimerFigura
+namespace CherryEngine
 {
     class Cara
     {
