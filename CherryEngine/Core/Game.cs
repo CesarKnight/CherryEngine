@@ -6,6 +6,7 @@ using OpenTK.Windowing.GraphicsLibraryFramework;
 
 using CherryEngine.Components;
 using CherryEngine.Editor;
+using ImGuiNET;
 
 namespace CherryEngine.Core
 {
@@ -15,6 +16,8 @@ namespace CherryEngine.Core
         public TransformationEditor editor;
         public  Vector2 lastMousePosition;
         private Shader? shader;
+
+        ImGuiController _controller;
 
         public Escenario escenario;
         public bool ProductionMode = false;
@@ -45,6 +48,7 @@ namespace CherryEngine.Core
         {
             base.OnFramebufferResize(e);
             GL.Viewport(0, 0, e.Width, e.Height);
+            _controller.WindowResized(ClientSize.X, ClientSize.Y);
         }
 
         protected override void OnUnload()
@@ -56,6 +60,8 @@ namespace CherryEngine.Core
         protected override void OnLoad()
         {
             base.OnLoad();
+            _controller = new ImGuiController(300, 400);
+
             this.WindowState = WindowState.Maximized;
             CursorState = CursorState.Grabbed;
 
@@ -97,6 +103,9 @@ namespace CherryEngine.Core
         protected override void OnRenderFrame(FrameEventArgs args)
         {
             base.OnRenderFrame(args);
+
+            _controller.Update(this, (float)args.Time);
+
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
             shader?.Use();
@@ -120,7 +129,25 @@ namespace CherryEngine.Core
                 escenario.dibujar(shader);
             }
 
+            ImGui.ShowMetricsWindow();
+            _controller.Render();
+            ImGuiController.CheckGLError("End of frame");
+
             SwapBuffers();
+        }
+        protected override void OnTextInput(TextInputEventArgs e)
+        {
+            base.OnTextInput(e);
+
+
+            _controller.PressChar((char)e.Unicode);
+        }
+
+        protected override void OnMouseWheel(MouseWheelEventArgs e)
+        {
+            base.OnMouseWheel(e);
+
+            _controller.MouseScroll(e.Offset);
         }
 
         // llamada a la api de GLFW para obtener el tamaño de la pantalla
