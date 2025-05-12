@@ -7,10 +7,12 @@ using System.Threading.Tasks;
 using OpenTK.Windowing.GraphicsLibraryFramework;
 using OpenTK.Mathematics;
 using OpenTK.Windowing.Common;
+using CherryEngine.Components;
+using CherryEngine.Core;
 
-namespace CherryEngine
+namespace CherryEngine.Editor
 {
-    class Editor
+    class TransformationEditor
     {
         private Camera Camera;
         private Game Game;
@@ -37,7 +39,7 @@ namespace CherryEngine
         }
         public TransformationEditMode? currentTransformationMode = null;
 
-        public Editor(Camera camera, Game game)
+        public TransformationEditor(Camera camera, Game game)
         {
             Camera = camera;
             Game = game;
@@ -61,7 +63,7 @@ namespace CherryEngine
 
             if (keyboardState.IsKeyDown(Keys.G) && KeyCooldown <= 0)
             {
-                System.Console.WriteLine("guardando escenario");
+                Console.WriteLine("guardando escenario");
                 Game.escenario.GuardarEscenario(EscenarioFileName, Game.ProductionMode);
 
                 KeyCooldown = KeyDelay;
@@ -69,7 +71,7 @@ namespace CherryEngine
 
             if (keyboardState.IsKeyDown(Keys.H) && KeyCooldown <= 0)
             {
-                System.Console.WriteLine("cargando escenario");
+                Console.WriteLine("cargando escenario");
                 Game.escenario.CargarEscenario(EscenarioFileName, Game.ProductionMode);
                 Escenario = Game.escenario;
 
@@ -273,7 +275,7 @@ namespace CherryEngine
             EditModeActive = !EditModeActive;
 
             string estado = EditModeActive ? "Activado" : "Desactivado";
-            System.Console.WriteLine("Modo edicion: " + estado);
+            Console.WriteLine("Modo edicion: " + estado);
         }
     }
 }

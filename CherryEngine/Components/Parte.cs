@@ -4,11 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
-
+using CherryEngine.Core;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
 
-namespace CherryEngine
+namespace CherryEngine.Components
 {
     class Parte
     {
@@ -25,15 +25,15 @@ namespace CherryEngine
             get
             {
                 float[] posicionArray = new float[3];
-                posicionArray[0] = this._offsetCoords.X;
-                posicionArray[1] = this._offsetCoords.Y;
-                posicionArray[2] = this._offsetCoords.Z;
+                posicionArray[0] = _offsetCoords.X;
+                posicionArray[1] = _offsetCoords.Y;
+                posicionArray[2] = _offsetCoords.Z;
                 return posicionArray;
             }
             set
             {
-                this._offsetCoords = new Vector3(0,0,0);
-                this.Trasladar(value[0], value[1], value[2]);
+                _offsetCoords = new Vector3(0,0,0);
+                Trasladar(value[0], value[1], value[2]);
             }
         }
         public float[] Rotation
@@ -41,91 +41,91 @@ namespace CherryEngine
             get
             {
                 float[] rotacionArray = new float[3];
-                rotacionArray[0] = this._rotation.X;
-                rotacionArray[1] = this._rotation.Y;
-                rotacionArray[2] = this._rotation.Z;
+                rotacionArray[0] = _rotation.X;
+                rotacionArray[1] = _rotation.Y;
+                rotacionArray[2] = _rotation.Z;
                 return rotacionArray;
             }
             set
             {
-                this._rotation = new Vector3(0, 0, 0);
-                this.Rotar(value[0], value[1], value[2]);
+                _rotation = new Vector3(0, 0, 0);
+                Rotar(value[0], value[1], value[2]);
             }
         }
 
         public float Scale
         {
-            get { return this._scale; }
+            get { return _scale; }
             set 
-            { 
-                this._scale = 1.0f;
-                this.Escalar(value);
+            {
+                _scale = 1.0f;
+                Escalar(value);
             }
         }
 
         public Parte()
         {
-            this._offsetCoords = new Vector3(0.0f, 0.0f, 0.0f);
-            this._rotation = new Vector3(0.0f, 0.0f, 0.0f);
-            this._scale = 1.0f;
-            this.Caras = new List<Cara>();
+            _offsetCoords = new Vector3(0.0f, 0.0f, 0.0f);
+            _rotation = new Vector3(0.0f, 0.0f, 0.0f);
+            _scale = 1.0f;
+            Caras = new List<Cara>();
         }
 
         public Parte(float difX, float difY, float difZ) : this()
         {
-            this._offsetCoords = new Vector3(difX, difY, difZ);
+            _offsetCoords = new Vector3(difX, difY, difZ);
         }
 
         public Parte(Vector3 offset) : this()
         {
-            this._offsetCoords = offset;
+            _offsetCoords = offset;
         }
 
         public void dibujar(Vector3 posCentroObjeto, Matrix4 objetoTransform, Shader shader)
         {
             // Create local transformation matrices
-            Matrix4 parteRotation = Matrix4.CreateRotationX(MathHelper.DegreesToRadians(this._rotation.X)) *
-                                  Matrix4.CreateRotationY(MathHelper.DegreesToRadians(this._rotation.Y)) *
-                                  Matrix4.CreateRotationZ(MathHelper.DegreesToRadians(this._rotation.Z));
+            Matrix4 parteRotation = Matrix4.CreateRotationX(MathHelper.DegreesToRadians(_rotation.X)) *
+                                  Matrix4.CreateRotationY(MathHelper.DegreesToRadians(_rotation.Y)) *
+                                  Matrix4.CreateRotationZ(MathHelper.DegreesToRadians(_rotation.Z));
 
-            Matrix4 parteScale = Matrix4.CreateScale(this._scale);
+            Matrix4 parteScale = Matrix4.CreateScale(_scale);
 
             // Calculate the transformed position of this part
-            Vector3 transformedPos = Vector3.TransformPosition(this._offsetCoords, objetoTransform);
+            Vector3 transformedPos = Vector3.TransformPosition(_offsetCoords, objetoTransform);
             Vector3 finalPos = posCentroObjeto + transformedPos;
 
             // Combine transformations
             Matrix4 finalTransform = parteScale * parteRotation * objetoTransform;
 
-            foreach (Cara cara in this.Caras)
+            foreach (Cara cara in Caras)
             {
-                cara.Dibujar(finalPos, finalTransform, this._scale, shader);
+                cara.Dibujar(finalPos, finalTransform, _scale, shader);
             }
         }
 
         public void Escalar(float multiplicador)
         {
-            this._scale *= multiplicador;
+            _scale *= multiplicador;
         }
 
         public void Rotar(float x, float y, float z)
         {
-            this._rotation.X += x;
-            this._rotation.Y += y;
-            this._rotation.Z += z;
+            _rotation.X += x;
+            _rotation.Y += y;
+            _rotation.Z += z;
         }
 
         public void Trasladar(float x, float y, float z)
         {
-            this._offsetCoords.X += x;
-            this._offsetCoords.Y += y;
-            this._offsetCoords.Z += z;
+            _offsetCoords.X += x;
+            _offsetCoords.Y += y;
+            _offsetCoords.Z += z;
         }
 
         public void cargarEsfera(string colorHex, int latitudeBands = 10, int longitudeBands = 10)
         {
             // Clear any existing caras
-            this.Caras = new List<Cara>();
+            Caras = new List<Cara>();
 
             // Calculate vertices
             List<VerticeColor> vertices = new List<VerticeColor>();
@@ -182,7 +182,7 @@ namespace CherryEngine
             esfera.SetVerticesColor(verticesArray, indicesArray, colorHex);
 
             // Add the cara to the parte
-            this.Caras.Add(esfera);
+            Caras.Add(esfera);
         }
         public void cargarCubo()
         {
@@ -261,7 +261,7 @@ namespace CherryEngine
                 superior,
                 inferior,
             ];
-            this.Caras = carasCubo;
+            Caras = carasCubo;
         }
         public void cargarCrossAxis()
         {
@@ -309,7 +309,7 @@ namespace CherryEngine
                 yAxis,
                 zAxis,
             ];
-            this.Caras = carasCrossAxis;
+            Caras = carasCrossAxis;
         }
     }
 }

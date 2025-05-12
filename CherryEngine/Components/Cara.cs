@@ -8,8 +8,9 @@ using System.Threading.Tasks;
 
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
+using CherryEngine.Core;
 
-namespace CherryEngine
+namespace CherryEngine.Components
 {
     class Cara
     {

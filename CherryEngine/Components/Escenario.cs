@@ -7,8 +7,9 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 
 using OpenTK.Mathematics;
+using CherryEngine.Core;
 
-namespace CherryEngine
+namespace CherryEngine.Components
 {
     class Escenario
     {
@@ -23,14 +24,14 @@ namespace CherryEngine
         {
             get {
                 float[] posicionArray = new float[3];
-                posicionArray[0] = this._posicion.X;
-                posicionArray[1] = this._posicion.Y;
-                posicionArray[2] = this._posicion.Z;
+                posicionArray[0] = _posicion.X;
+                posicionArray[1] = _posicion.Y;
+                posicionArray[2] = _posicion.Z;
                 return posicionArray; 
             }
             set {
                 _posicion = new Vector3(0,0,0);
-                this.Trasladar(value[0], value[1], value[2]);
+                Trasladar(value[0], value[1], value[2]);
             }
         }
 
@@ -39,25 +40,25 @@ namespace CherryEngine
             get
             {
                 float[] rotacionArray = new float[3];
-                rotacionArray[0] = this._rotation.X;
-                rotacionArray[1] = this._rotation.Y;
-                rotacionArray[2] = this._rotation.Z;
+                rotacionArray[0] = _rotation.X;
+                rotacionArray[1] = _rotation.Y;
+                rotacionArray[2] = _rotation.Z;
                 return rotacionArray;
             }
             set
             {
                 _rotation = new Vector3(0, 0, 0);
-                this.Rotar(value[0], value[1], value[2]);
+                Rotar(value[0], value[1], value[2]);
             }
         }
 
         public float Scale
         {
-            get { return this._scale; }
+            get { return _scale; }
             set
             {
                 _scale = 1.0f;
-                this.Escalar(value);
+                Escalar(value);
             }
         }
 
@@ -69,53 +70,53 @@ namespace CherryEngine
 
         public Escenario()
         {
-            this._posicion = new Vector3(0.0f, 0.0f, 0.0f);
-            this._rotation = new Vector3(0.0f, 0.0f, 0.0f);
-            this._scale = 1.0f;
-            this.Objetos = new Dictionary<string, Objeto>(); 
+            _posicion = new Vector3(0.0f, 0.0f, 0.0f);
+            _rotation = new Vector3(0.0f, 0.0f, 0.0f);
+            _scale = 1.0f;
+            Objetos = new Dictionary<string, Objeto>(); 
         }
         public Escenario(float x, float y, float z):this()
         {
-            this._posicion = new Vector3(x, y, z);
+            _posicion = new Vector3(x, y, z);
         }
         public Escenario(Vector3 posicion):this()
         {
-            this._posicion = posicion;
+            _posicion = posicion;
         }
 
         public void dibujar(Shader shader)
         {
-            Matrix4 escenarioRotation = Matrix4.CreateRotationX(MathHelper.DegreesToRadians(this._rotation.X)) *
-                                      Matrix4.CreateRotationY(MathHelper.DegreesToRadians(this._rotation.Y)) *
-                                      Matrix4.CreateRotationZ(MathHelper.DegreesToRadians(this._rotation.Z));
+            Matrix4 escenarioRotation = Matrix4.CreateRotationX(MathHelper.DegreesToRadians(_rotation.X)) *
+                                      Matrix4.CreateRotationY(MathHelper.DegreesToRadians(_rotation.Y)) *
+                                      Matrix4.CreateRotationZ(MathHelper.DegreesToRadians(_rotation.Z));
 
-            Matrix4 escenarioScale = Matrix4.CreateScale(this._scale);
+            Matrix4 escenarioScale = Matrix4.CreateScale(_scale);
 
             Matrix4 escenarioTransform = escenarioScale * escenarioRotation;
 
             foreach (var objeto in Objetos)
             {
-                objeto.Value.dibujar(this._posicion, escenarioTransform, shader);
+                objeto.Value.dibujar(_posicion, escenarioTransform, shader);
             }
         }
 
         public void Escalar(float multiplicador)
         {
-            this._scale *= multiplicador;           
+            _scale *= multiplicador;           
         }
 
         public void Rotar(float x, float y, float z)
         {
-            this._rotation.X += x;
-            this._rotation.Y += y;
-            this._rotation.Z += z;
+            _rotation.X += x;
+            _rotation.Y += y;
+            _rotation.Z += z;
         }
 
         public void Trasladar(float x, float y, float z)
         {
-            this._posicion.X += x;
-            this._posicion.Y += y;
-            this._posicion.Z += z;
+            _posicion.X += x;
+            _posicion.Y += y;
+            _posicion.Z += z;
         }
 
         public void GuardarEscenario(string filePath, bool inProduction)
@@ -125,7 +126,7 @@ namespace CherryEngine
             if (!inProduction)
             {
                 string baseDir = AppDomain.CurrentDomain.BaseDirectory;
-                string shaderDir = Path.GetFullPath(Path.Combine(baseDir, @"..\..\..\Escenarios"));
+                string shaderDir = Path.GetFullPath(Path.Combine(baseDir, @"..\..\..\.Escenarios"));
                 filePath = Path.Combine(shaderDir, filePath);
             }
 
@@ -137,43 +138,43 @@ namespace CherryEngine
             if (! inProduction)
             {
                 string baseDir = AppDomain.CurrentDomain.BaseDirectory;
-                string shaderDir = Path.GetFullPath(Path.Combine(baseDir, @"..\..\..\Escenarios"));
+                string shaderDir = Path.GetFullPath(Path.Combine(baseDir, @"..\..\..\.Escenarios"));
                 filePath = Path.Combine(shaderDir, filePath);
             }
 
             if (!File.Exists(filePath))
             {
-                System.Console.WriteLine("El archivo no existe.");
+                Console.WriteLine("El archivo no existe.");
                 return false;
             }
             string jsonString = File.ReadAllText(filePath);
 
             if (string.IsNullOrEmpty(jsonString))
             {
-                System.Console.WriteLine("El archivo está vacío.");
+                Console.WriteLine("El archivo está vacío.");
                 return false;
             }
             var EscenarioCargado = JsonSerializer.Deserialize<Escenario>(jsonString, options);
 
             if(EscenarioCargado == null)
             {
-                System.Console.WriteLine("Error al deserializar el archivo.");
+                Console.WriteLine("Error al deserializar el archivo.");
                 return false;
             }
-            
-            this._posicion = new Vector3(
+
+            _posicion = new Vector3(
                 EscenarioCargado.Posicion[0],
                 EscenarioCargado.Posicion[1],
                 EscenarioCargado.Posicion[2]
             );
-            this._rotation = new Vector3(
+            _rotation = new Vector3(
                 EscenarioCargado.Rotation[0],
                 EscenarioCargado.Rotation[1],
                 EscenarioCargado.Rotation[2]
             );
-            this._scale = EscenarioCargado.Scale;
+            _scale = EscenarioCargado.Scale;
 
-            this.Objetos = EscenarioCargado.Objetos;
+            Objetos = EscenarioCargado.Objetos;
             return true;
         }
 
@@ -183,19 +184,19 @@ namespace CherryEngine
             cubitos.cargarCubos();
             cubitos.Scale = 2f;
             cubitos.Rotar(45, 45, 30);
-            this.Objetos.Add("U", cubitos);
+            Objetos.Add("U", cubitos);
 
             Objeto U2 = new Objeto(5.0f, 0.0f, 0.0f);
             U2.cargarCubos();
-            this.Objetos.Add("U2", U2);
+            Objetos.Add("U2", U2);
 
             Objeto eje = new Objeto(new Vector3(0,0,0));
             eje.cargarAxis();
-            this.Objetos.Add("Ejes", eje);
+            Objetos.Add("Ejes", eje);
 
             Objeto esfera = new Objeto(0, 1, 0);
             esfera.CargarEsfera();
-            this.Objetos.Add("Esfera", esfera);
+            Objetos.Add("Esfera", esfera);
         }
     }
 }

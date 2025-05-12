@@ -1,25 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.IO;
-using System.Linq;
-using System.Reflection.Metadata;
-using System.Text;
-using System.Threading.Tasks;
-using System.Text.Json;
-
-using OpenTK.Graphics.OpenGL4;
+﻿using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
 using OpenTK.Windowing.Common;
 using OpenTK.Windowing.Desktop;
 using OpenTK.Windowing.GraphicsLibraryFramework;
 
-namespace CherryEngine
+using CherryEngine.Components;
+using CherryEngine.Editor;
+
+namespace CherryEngine.Core
 {
     internal class Game : GameWindow
     {
         private Camera camera;
-        public Editor editor;
+        public TransformationEditor editor;
         public  Vector2 lastMousePosition;
         private Shader? shader;
 
@@ -44,7 +37,7 @@ namespace CherryEngine
                 new Vector3(0.0f, 0.0f, -1.0f),
                 Vector3.UnitY
             );
-            editor = new Editor(camera,this);
+            editor = new TransformationEditor(camera,this);
             escenario = new Escenario(0, 0, 0);
         }
 
@@ -70,7 +63,7 @@ namespace CherryEngine
             GL.Enable(EnableCap.DepthTest);
 
             string baseDir = AppDomain.CurrentDomain.BaseDirectory;
-            string shaderDir = Path.GetFullPath(Path.Combine(baseDir, @"..\..\..\Shaders"));
+            string shaderDir = Path.GetFullPath(Path.Combine(baseDir, @"..\..\..\.Shaders"));
             string vertexPath = Path.Combine(shaderDir, "shader.vert");
             string fragmentPath = Path.Combine(shaderDir, "shader.frag");
 

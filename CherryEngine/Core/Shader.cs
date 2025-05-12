@@ -3,16 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
 using OpenTK.Graphics.OpenGL4;
 
-namespace CherryEngine
+namespace CherryEngine.Core
 {
     class Shader
     {
         public int Handle;
 
-        public Shader(String vertexPath, String fragmentPath)
+        public Shader(string vertexPath, string fragmentPath)
         {
             int VertexShader, FragmentShader;
 

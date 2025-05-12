@@ -4,11 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
-
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
 
-namespace CherryEngine
+namespace CherryEngine.Components
 {
     class VerticeColor
     {
@@ -21,12 +20,12 @@ namespace CherryEngine
 
         public VerticeColor()
         {
-            this.x = 0.0f;
-            this.y = 0.0f;
-            this.z = 0.0f;
-            this.r = 1.0f;
-            this.g = 1.0f;
-            this.b = 1.0f;
+            x = 0.0f;
+            y = 0.0f;
+            z = 0.0f;
+            r = 1.0f;
+            g = 1.0f;
+            b = 1.0f;
         }
 
         public VerticeColor(float x, float y, float z, float r, float g, float b)
@@ -45,9 +44,9 @@ namespace CherryEngine
             this.y = y;
             this.z = z;
             Vector3 color = HexToVector3(hexColor);
-            this.r = color.X;
-            this.g = color.Y;
-            this.b = color.Z;
+            r = color.X;
+            g = color.Y;
+            b = color.Z;
         }
 
         public VerticeColor(float x, float y, float z)
@@ -56,17 +55,17 @@ namespace CherryEngine
             this.y = y;
             this.z = z;
             //color por defecto blanco
-            this.r = 1.0f;
-            this.g = 1.0f;
-            this.b = 1.0f;
+            r = 1.0f;
+            g = 1.0f;
+            b = 1.0f;
         }
 
         public void SetColor(string hexColor)
         {
             Vector3 color = HexToVector3(hexColor);
-            this.r = color.X;
-            this.g = color.Y;
-            this.b = color.Z;
+            r = color.X;
+            g = color.Y;
+            b = color.Z;
         }
 
         public void SetColor(float r, float g, float b)

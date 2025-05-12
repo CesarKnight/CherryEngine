@@ -1,6 +1,8 @@
 ﻿using OpenTK.Windowing.GraphicsLibraryFramework;
-using CherryEngine;
 using System.Threading;
+using CherryEngine.Editor;
+using CherryEngine.Components;
+using CherryEngine.Core;
 
 internal class Engine
 {
@@ -113,15 +115,15 @@ internal class Engine
                 break;
             case "rotar":
                 Console.WriteLine("Rotando escenario...");
-                jueguito!.editor.currentTransformationMode = Editor.TransformationEditMode.Rotacion;
+                jueguito!.editor.currentTransformationMode = TransformationEditor.TransformationEditMode.Rotacion;
                 break;
             case "trasladar":
                 Console.WriteLine("Moviendo escenario...");
-                jueguito!.editor.currentTransformationMode = Editor.TransformationEditMode.Traslacion;
+                jueguito!.editor.currentTransformationMode = TransformationEditor.TransformationEditMode.Traslacion;
                 break;
             case "escalar":
                 Console.WriteLine("Escalando escenario...");
-                jueguito!.editor.currentTransformationMode = Editor.TransformationEditMode.Escalado;
+                jueguito!.editor.currentTransformationMode = TransformationEditor.TransformationEditMode.Escalado;
                 break;
             case "ayuda":
                 Console.WriteLine("Comandos disponibles: ");
@@ -185,15 +187,15 @@ internal class Engine
                 break;
             case "rotar":
                 Console.WriteLine("Rotando objeto...");
-                jueguito!.editor.currentTransformationMode = Editor.TransformationEditMode.Rotacion;
+                jueguito!.editor.currentTransformationMode = TransformationEditor.TransformationEditMode.Rotacion;
                 break;
             case "trasladar":
                 Console.WriteLine("Moviendo objeto...");
-                jueguito!.editor.currentTransformationMode = Editor.TransformationEditMode.Traslacion;
+                jueguito!.editor.currentTransformationMode = TransformationEditor.TransformationEditMode.Traslacion;
                 break;
             case "escalar":
                 Console.WriteLine("Escalando objeto...");
-                jueguito!.editor.currentTransformationMode = Editor.TransformationEditMode.Escalado;
+                jueguito!.editor.currentTransformationMode = TransformationEditor.TransformationEditMode.Escalado;
                 break;
             case "ayuda":
                 Console.WriteLine("Comandos disponibles: ");
@@ -242,15 +244,15 @@ internal class Engine
         {
             case "rotar":
                 Console.WriteLine("Rotando Parte...");
-                jueguito!.editor.currentTransformationMode = Editor.TransformationEditMode.Rotacion;
+                jueguito!.editor.currentTransformationMode = TransformationEditor.TransformationEditMode.Rotacion;
                 break;
             case "trasladar":
                 Console.WriteLine("Moviendo Parte...");
-                jueguito!.editor.currentTransformationMode = Editor.TransformationEditMode.Traslacion;
+                jueguito!.editor.currentTransformationMode = TransformationEditor.TransformationEditMode.Traslacion;
                 break;
             case "escalar":
                 Console.WriteLine("Escalando Parte...");
-                jueguito!.editor.currentTransformationMode = Editor.TransformationEditMode.Escalado;
+                jueguito!.editor.currentTransformationMode = TransformationEditor.TransformationEditMode.Escalado;
                 break;
             case "ayuda":
                 Console.WriteLine("Comandos disponibles: ");
