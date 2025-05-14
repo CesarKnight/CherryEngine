@@ -6,7 +6,7 @@ using OpenTK.Windowing.GraphicsLibraryFramework;
 
 using CherryEngine.Components;
 using CherryEngine.Editor;
-using ImGuiNET;
+using CherryEngine.Gui;
 
 namespace CherryEngine.Core
 {
@@ -18,6 +18,7 @@ namespace CherryEngine.Core
         private Shader? shader;
 
         ImGuiController _controller;
+        DebugOverlay _debugOverlay;
 
         public Escenario escenario;
         public bool ProductionMode = false;
@@ -61,6 +62,7 @@ namespace CherryEngine.Core
         {
             base.OnLoad();
             _controller = new ImGuiController(300, 400);
+            _debugOverlay = new DebugOverlay();
 
             this.WindowState = WindowState.Maximized;
             CursorState = CursorState.Grabbed;
@@ -129,10 +131,11 @@ namespace CherryEngine.Core
                 escenario.dibujar(shader);
             }
 
-            ImGui.ShowMetricsWindow();
-            _controller.Render();
-            ImGuiController.CheckGLError("End of frame");
-
+            if (_debugOverlay != null)
+            {
+                _debugOverlay.Draw();
+                _controller.Render();
+            }
             SwapBuffers();
         }
         protected override void OnTextInput(TextInputEventArgs e)
